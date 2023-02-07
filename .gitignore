@@ -154,3 +154,4 @@ cython_debug/
 
 /docs/build/
 /docs/source/generated/
+.dev-tests

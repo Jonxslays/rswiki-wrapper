@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Requirements
 
-To begin using the wrapper, you can install with pip 
+To begin using the wrapper, you can install with pip
 
 `pip install rswiki-wrapper`
 
@@ -25,17 +25,19 @@ To assist in the user setup, each child class accepts a `user_agent` parameter. 
 ## Usage
 
 The project is written such that it exposes the full API responses for user interaction under `WikiQuery.response`. Users can review all aspects of the request response under this property. Each class also exposes two helpful properties:
-* `WikiQuery.json` is a python dictionary format of the API response
-* `WikiQuery.content` is the "useful" data returned by the query, typically formatted as a python dictionary or list of dictionaries, where applicable.
+
+- `WikiQuery.json` is a python dictionary format of the API response
+- `WikiQuery.content` is the "useful" data returned by the query, typically formatted as a python dictionary or list of dictionaries, where applicable.
 
 For detailed documentation on the various API endpoints exposed and sample usage, see the [project documentation](https://rswiki-wrapper.readthedocs.io/)
 
 ### API Endpoints
 
 For information on the various acceptable routes, queries, and optional arguments see the following documentation:
-* [MediaWiki API](https://runescape.wiki/api.php) for all requests related to RuneScape wiki. This endpoint is valid for both OldSchool RuneScape and RuneScape.
-* [Weird Gloop API](https://api.weirdgloop.org/#/) for requests to use the WeirdGloop API, which provides data for the RuneScape Grand Exchange and RuneScape Information. 
-* [Real-Time API](https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices) for access to real-time Grand Exchange data. This endpoint is valid only for OldSchool RuneScape.
+
+- [MediaWiki API](https://runescape.wiki/api.php) for all requests related to RuneScape wiki. This endpoint is valid for both OldSchool RuneScape and RuneScape.
+- [Weird Gloop API](https://api.weirdgloop.org/#/) for requests to use the WeirdGloop API, which provides data for the RuneScape Grand Exchange and RuneScape Information.
+- [Real-Time API](https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices) for access to real-time Grand Exchange data. This endpoint is valid only for OldSchool RuneScape.
 
 ## Tests
 
@@ -49,4 +51,5 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the
+[LICENSE](https://github.com/Garrett3Nelson/rswiki-wrapper/blob/master/LICENSE) file for details.

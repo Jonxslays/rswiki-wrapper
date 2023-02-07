@@ -8,6 +8,7 @@ description = "RS Wiki API Wrapper"
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["rswiki", "runescape", 'osrs']
+url = "https://github.com/Garrett3Nelson/rswiki-wrapper"
 license = {file='LICENSE'}
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -16,7 +17,8 @@ classifiers = [
 ]
 version = "0.0.6"
 dependencies = [
-    "requests"
+    "aiohttp==3.8.3",
+    "requests==2.28.1"
 ]
 
 [tool.setuptools.packages]

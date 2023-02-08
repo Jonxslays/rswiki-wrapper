@@ -8,6 +8,11 @@ class BaseUrl(Enum):
     REALTIME_WIKI_PRICE_BASE_URL = "https://prices.runescape.wiki/api/v1"
 
 
+class DefaultHeaders(Enum):
+    PROJECT_NAME = "RS Wiki API Python Wrapper"
+    CONTACT_INFO = "Default"
+
+
 class GameType(Enum):
     RS = "rs"
     OSRS = "osrs"

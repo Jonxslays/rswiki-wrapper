@@ -4,11 +4,14 @@ import typing as t
 
 import aiohttp
 
+from rswiki_wrapper import contracts
 from rswiki_wrapper import errors
 from rswiki_wrapper import routes
 
+__all__ = ("HttpService",)
 
-class RestClient:
+
+class HttpService(contracts.HttpContract):
     __slots__ = ("_session",)
 
     def __init__(self, project_name: str, contact_info: str) -> None:

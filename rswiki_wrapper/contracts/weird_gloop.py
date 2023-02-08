@@ -33,6 +33,6 @@ class WeirdGloopContract(abc.ABC):
 
     @abc.abstractmethod
     async def get_latest_price(
-        self, game: enums.GameType, *ids_or_names: str | int
+        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
     ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
         ...

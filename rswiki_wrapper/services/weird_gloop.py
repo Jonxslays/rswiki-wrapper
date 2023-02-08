@@ -43,7 +43,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         return models.SocialFeedResponse.from_raw(data)
 
     async def get_latest_price(
-        self, game: enums.GameType, *ids_or_names: str | int
+        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
     ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
         if not ids_or_names:
             raise errors.MissingArgumentError("You must specify at least 1 id or name.")
@@ -53,8 +53,13 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         if ids := "|".join(str(i) for i in ids_or_names if isinstance(i, int)):
             params["id"] = ids
 
+        # Currently only id is taken into account if both id and name are sent together
+        # Still sending both in case that behavior ever changes and you can use both
         if names := "|".join(n for n in ids_or_names if isinstance(n, str)):
             params["name"] = names
+
+        if locale:
+            params["lang"] = locale.value
 
         route = routes.LATEST_PRICE.compile(game.value).with_params(params)
         data = await self._fetch(route)

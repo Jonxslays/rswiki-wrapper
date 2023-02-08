@@ -92,6 +92,6 @@ class Client:
         return await self._weird_gloop.get_social_feed(page)
 
     async def get_latest_price(
-        self, game: enums.GameType, *ids_or_names: str | int
+        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
     ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
-        return await self._weird_gloop.get_latest_price(game, *ids_or_names)
+        return await self._weird_gloop.get_latest_price(game, *ids_or_names, locale=locale)

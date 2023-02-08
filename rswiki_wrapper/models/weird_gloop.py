@@ -145,16 +145,20 @@ class SocialFeedResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class LatestPriceResponse(BaseResponse):
-    id: int
+    id: str
     price: int
     volume: int | None
     timestamp: datetime
+    identifier: str
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> LatestPriceResponse:
         self = cls()
 
         for attr in self.__dataclass_fields__:
+            if attr == "identifier":
+                continue
+
             value = data[attr]
             setattr(self, attr, self._from_iso(value) if attr == "timestamp" else value)
 

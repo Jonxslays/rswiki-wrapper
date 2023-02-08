@@ -93,5 +93,5 @@ class Client:
 
     async def get_latest_price(
         self, game: enums.GameType, *, id: int | None = None, name: str | None = None
-    ) -> result.Result[models.LatestPriceResponse, models.ErrorResponse]:
+    ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
         return await self._weird_gloop.get_latest_price(game, id=id, name=name)

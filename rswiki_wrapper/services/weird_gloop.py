@@ -43,16 +43,20 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
     async def get_latest_price(
         self, game: enums.GameType, *, id: int | None = None, name: str | None = None
-    ) -> result.Result[models.LatestPriceResponse, models.ErrorResponse]:
+    ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
         params = {k: v for k, v in (("id", id), ("name", name)) if v}
         route = routes.LATEST_PRICE.compile(game.value).with_params(params)
         data = await self._fetch(route)
 
         if "error" in data:
-            return result.Result[models.LatestPriceResponse, models.ErrorResponse](
+            return result.Result[list[models.LatestPriceResponse], models.ErrorResponse](
                 None, models.ErrorResponse.from_raw(data)
             )
 
-        return result.Result[models.LatestPriceResponse, models.ErrorResponse](
-            models.LatestPriceResponse.from_raw(data), None
-        )
+        prices: list[models.LatestPriceResponse] = []
+        for key, value in data.items():
+            response = models.LatestPriceResponse.from_raw(value)
+            response.identifier = key
+            prices.append(response)
+
+        return result.Result[list[models.LatestPriceResponse], models.ErrorResponse](prices, None)

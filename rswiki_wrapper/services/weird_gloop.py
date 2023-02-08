@@ -154,9 +154,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
         prices: list[models.CompressedPriceResponse] = []
         for key, value in data.items():
-            for pair in value:
-                response = models.CompressedPriceResponse.from_raw({key: pair})
-                prices.append(response)
+            prices.extend(models.CompressedPriceResponse.from_raw({key: pair}) for pair in value)
 
         return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](
             prices, None

@@ -45,7 +45,7 @@ class Route:
         compiled = CompiledRoute(self)
 
         for arg in args:
-            compiled.uri.replace("{}", str(arg), 1)
+            compiled.uri = compiled.uri.replace(r"{}", str(arg), 1)
 
         return compiled
 

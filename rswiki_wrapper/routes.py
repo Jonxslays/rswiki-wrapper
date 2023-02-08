@@ -50,7 +50,8 @@ class Route:
         return compiled
 
 
-VOS: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP_BASE_URL, "/runescape/vos")
-VOS_HISTORY: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP_BASE_URL, "/runescape/vos/history")
-LATEST_EXCHANGE_UPDATE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP_BASE_URL, "/exchange")
-SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP_BASE_URL, "/runescape/social")
+VOS: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/vos")
+VOS_HISTORY: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/vos/history")
+LATEST_EXCHANGE_UPDATE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange")
+LATEST_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/latest")
+SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social")

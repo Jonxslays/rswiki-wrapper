@@ -10,6 +10,7 @@ from rswiki_wrapper import enums
 __all__ = (
     "ErrorResponse",
     "LatestExchangeUpdateResponse",
+    "LatestPriceResponse",
     "PaginationMeta",
     "SocialFeedData",
     "SocialFeedResponse",
@@ -86,9 +87,6 @@ class LatestExchangeUpdateResponse(BaseResponse):
     rs_fsw_2022: datetime
     osrs_fsw_2022: datetime
 
-    def _from_iso(self, timestamp: str) -> datetime:
-        return datetime.fromisoformat(timestamp.rstrip("Z"))
-
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> LatestExchangeUpdateResponse:
         self = cls()
@@ -114,15 +112,12 @@ class SocialFeedData(BaseResponse):
     date_published: datetime | None
     date_added: datetime
 
-    def _from_iso(self, timestamp: str | None) -> datetime | None:
-        return datetime.fromisoformat(timestamp.rstrip("Z")) if timestamp else None
-
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedData:
         self = cls()
         self.expiry_date = self._from_iso(data.pop("expiryDate", None))
         self.date_published = self._from_iso(data.pop("datePublished", None))
-        self.date_added = t.cast(datetime, self._from_iso(data.pop("dateAdded", None)))
+        self.date_added = self._from_iso(data.pop("dateAdded"))
 
         for k, v in data.items():
             try:
@@ -145,4 +140,22 @@ class SocialFeedResponse(BaseResponse):
         self = cls()
         self.pagination = PaginationMeta.from_raw(data["pagination"])
         self.data = [SocialFeedData.from_raw(feed) for feed in data["data"]]
+        return self
+
+
+@dataclass(slots=True, init=False)
+class LatestPriceResponse(BaseResponse):
+    id: int
+    price: int
+    volume: int | None
+    timestamp: datetime
+
+    @classmethod
+    def from_raw(cls, data: dict[str, t.Any]) -> LatestPriceResponse:
+        self = cls()
+
+        for attr in self.__dataclass_fields__:
+            value = data[attr]
+            setattr(self, attr, self._from_iso(value) if attr == "timestamp" else value)
+
         return self

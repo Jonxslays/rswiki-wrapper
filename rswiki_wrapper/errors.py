@@ -1,11 +1,20 @@
 from rswiki_wrapper import routes
 
 
-class HttpError(Exception):
+class RsWikiError(Exception):
+    ...
+
+
+class HttpError(RsWikiError):
     def __init__(self, route: routes.CompiledRoute, message: str) -> None:
         super().__init__(f"HTTP exception in {route.pretty()}: {message}")
 
 
-class UnwrapError(Exception):
+class UnwrapError(RsWikiError):
     def __init__(self, message: str) -> None:
         super().__init__(f"Unwrap failed: {message}")
+
+
+class MissingArgumentError(RsWikiError):
+    def __init__(self, message: str) -> None:
+        super().__init__(f"Missing required argument: {message}")

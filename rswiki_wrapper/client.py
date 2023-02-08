@@ -6,6 +6,7 @@ import typing as t
 from rswiki_wrapper import contracts
 from rswiki_wrapper import enums
 from rswiki_wrapper import models
+from rswiki_wrapper import result
 from rswiki_wrapper import services
 
 
@@ -25,6 +26,23 @@ class Client:
             ._assure_http(http)
             ._assure_weird_gloop(weird_gloop)
         )
+
+    @property
+    def contact_info(self) -> str:
+        """The contact info being sent with request headers."""
+        return self._contact_info
+
+    @contact_info.setter
+    def contact_info(self, contact_info: str) -> None:
+        self._contact_info = contact_info
+
+    @property
+    def project_name(self) -> str:
+        return self._project_name
+
+    @project_name.setter
+    def project_name(self, project_name: str) -> None:
+        self._project_name = project_name
 
     def _assure_headers(self, project_name: str | None, contact_info: str | None) -> Client:
         warn: t.Callable[[str], None] = lambda attr: print(
@@ -72,3 +90,8 @@ class Client:
 
     async def get_social_feed(self, page: int) -> models.SocialFeedResponse:
         return await self._weird_gloop.get_social_feed(page)
+
+    async def get_latest_price(
+        self, game: enums.GameType, *, id: int | None = None, name: str | None = None
+    ) -> result.Result[models.LatestPriceResponse, models.ErrorResponse]:
+        return await self._weird_gloop.get_latest_price(game, id=id, name=name)

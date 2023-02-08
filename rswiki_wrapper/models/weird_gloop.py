@@ -28,8 +28,10 @@ class ErrorResponse(BaseResponse):
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> ErrorResponse:
         self = cls()
-        self.success = data["success"]
-        self.error = data["error"]
+
+        for attr in self.__dataclass_fields__:
+            setattr(self, attr, data[attr])
+
         return self
 
 

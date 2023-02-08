@@ -1,5 +1,6 @@
 __all__ = (
     "BaseResponse",
+    "CompressedPriceResponse",
     "ErrorResponse",
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",

@@ -39,6 +39,14 @@ class Locale(Enum):
     """Portuguese"""
 
 
+class TimeFilter(Enum):
+    """A length of time to filter by."""
+
+    ALL = "all"
+    SAMPLE = "sample"
+    LAST_90_DAYS = "last90d"
+
+
 class VosDistrict(Enum):
     """The 8 Voice of Seren discricts."""
 

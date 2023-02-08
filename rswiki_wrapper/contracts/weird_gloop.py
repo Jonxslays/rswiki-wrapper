@@ -40,3 +40,27 @@ class WeirdGloopContract(abc.ABC):
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
     ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
         ...
+
+    @abc.abstractmethod
+    async def get_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None,
+        name: str | None,
+        locale: enums.Locale | None,
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+        ...
+
+    @abc.abstractmethod
+    async def get_compressed_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None,
+        name: str | None,
+        locale: enums.Locale | None,
+    ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
+        ...

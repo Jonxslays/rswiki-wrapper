@@ -48,7 +48,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         return models.SocialFeedResponse.from_raw(data)
 
     async def get_latest_price(
-        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
+        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
     ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
         if not ids_or_names:
             raise errors.MissingArgumentError("You must specify at least 1 id or name.")
@@ -81,3 +81,83 @@ class WeirdGloopService(contracts.WeirdGloopContract):
             prices.append(response)
 
         return result.Result[list[models.PriceResponse], models.ErrorResponse](prices, None)
+
+    async def get_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None,
+        name: str | None,
+        locale: enums.Locale | None,
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+        if not id and not name:
+            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
+
+        params: dict[str, str | int] = {}
+        if id:
+            params["id"] = id
+
+        if name:
+            params["name"] = name
+
+        if locale:
+            params["lang"] = locale.value
+
+        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
+        data = await self._fetch(route)
+
+        if "error" in data:
+            return result.Result[list[models.PriceResponse], models.ErrorResponse](
+                None, models.ErrorResponse.from_raw(data)
+            )
+
+        prices: list[models.PriceResponse] = []
+        for key, value in data.items():
+            for price in value:
+                response = models.PriceResponse.from_raw(price)
+                response.identifier = key
+                prices.append(response)
+
+        return result.Result[list[models.PriceResponse], models.ErrorResponse](prices, None)
+
+    async def get_compressed_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None,
+        name: str | None,
+        locale: enums.Locale | None,
+    ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
+        if not id and not name:
+            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
+
+        params: dict[str, str | int] = {"compress": "true"}
+        if id:
+            params["id"] = id
+
+        if name:
+            params["name"] = name
+
+        if locale:
+            params["lang"] = locale.value
+
+        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
+        data = await self._fetch(route)
+
+        if "error" in data:
+            return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](
+                None, models.ErrorResponse.from_raw(data)
+            )
+
+        prices: list[models.CompressedPriceResponse] = []
+        for key, value in data.items():
+            for pair in value:
+                print(pair)
+                response = models.CompressedPriceResponse.from_raw({key: pair})
+                prices.append(response)
+
+        return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](
+            prices, None
+        )

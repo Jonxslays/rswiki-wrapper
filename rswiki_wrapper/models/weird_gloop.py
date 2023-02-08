@@ -8,6 +8,7 @@ from .base import BaseResponse
 from rswiki_wrapper import enums
 
 __all__ = (
+    "CompressedPriceResponse",
     "ErrorResponse",
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",
@@ -92,7 +93,7 @@ class LatestExchangeUpdateResponse(BaseResponse):
         self = cls()
 
         for attr in self.__dataclass_fields__:
-            setattr(self, attr, self._from_iso(data[attr.replace("_", "-")]))
+            setattr(self, attr, self._dt_from_iso(data[attr.replace("_", "-")]))
 
         return self
 
@@ -115,9 +116,9 @@ class SocialFeedResponse(BaseResponse):
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedResponse:
         self = cls()
-        self.expiry_date = self._from_iso_maybe(data.pop("expiryDate", None))
-        self.date_published = self._from_iso_maybe(data.pop("datePublished", None))
-        self.date_added = self._from_iso(data.pop("dateAdded"))
+        self.expiry_date = self._dt_from_iso_maybe(data.pop("expiryDate", None))
+        self.date_published = self._dt_from_iso_maybe(data.pop("datePublished", None))
+        self.date_added = self._dt_from_iso(data.pop("dateAdded"))
 
         for k, v in data.items():
             try:
@@ -160,6 +161,32 @@ class PriceResponse(BaseResponse):
                 continue
 
             value = data[attr]
-            setattr(self, attr, self._from_iso(value) if attr == "timestamp" else value)
+            if attr == "timestamp":
+                if isinstance(value, int):
+                    value = self._dt_from_epoch(value, True)
+                else:
+                    value = self._dt_from_iso(value)
+
+            setattr(self, attr, value)
+
+        return self
+
+
+@dataclass(slots=True, init=False)
+class CompressedPriceResponse(BaseResponse):
+    price: int
+    timestamp: datetime
+    identifier: str
+
+    @classmethod
+    def from_raw(cls, data: dict[str, t.Any]) -> CompressedPriceResponse:
+        self = cls()
+
+        for key, value in data.items():
+            # There should only ever be 1 key in the data passed to this method
+            # that contains a 2 item list [epoch timestamp, price]
+            self.identifier = key
+            self.timestamp = self._dt_from_epoch(value[0], True)
+            self.price = value[1]
 
         return self

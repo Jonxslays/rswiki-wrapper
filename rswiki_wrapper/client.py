@@ -210,6 +210,7 @@ class Client:
 
             locale (`enums.Locale | None`):
                 The locale to use, if `None` the API uses English. Defaults to None.
+                    Only useful if names were used.
 
         Returns:
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
@@ -217,3 +218,29 @@ class Client:
                 or an error.
         """
         return await self._weird_gloop.get_latest_price(game, *ids_or_names, locale=locale)
+
+    async def get_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None = None,
+        name: str | None = None,
+        locale: enums.Locale | None = None,
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+        return await self._weird_gloop.get_historical_price(
+            game, time_filter, id=id, name=name, locale=locale
+        )
+
+    async def get_compressed_historical_price(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None = None,
+        name: str | None = None,
+        locale: enums.Locale | None = None,
+    ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
+        return await self._weird_gloop.get_compressed_historical_price(
+            game, time_filter, id=id, name=name, locale=locale
+        )

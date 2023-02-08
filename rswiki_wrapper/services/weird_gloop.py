@@ -95,8 +95,8 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         data = await self._fetch(route)
 
         if "error" in data:
-            return result.Result[list[models.PriceResponse], models.ErrorResponse](
-                None, models.ErrorResponse.from_raw(data)
+            return result.Err[list[models.PriceResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
             )
 
         prices: list[models.PriceResponse] = []
@@ -105,7 +105,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
             response.identifier = key
             prices.append(response)
 
-        return result.Result[list[models.PriceResponse], models.ErrorResponse](prices, None)
+        return result.Ok[list[models.PriceResponse], models.ErrorResponse](prices)
 
     async def get_historical_price(
         self,
@@ -121,8 +121,8 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         )
 
         if "error" in data:
-            return result.Result[list[models.PriceResponse], models.ErrorResponse](
-                None, models.ErrorResponse.from_raw(data)
+            return result.Err[list[models.PriceResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
             )
 
         prices: list[models.PriceResponse] = []
@@ -132,7 +132,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
                 response.identifier = key
                 prices.append(response)
 
-        return result.Result[list[models.PriceResponse], models.ErrorResponse](prices, None)
+        return result.Ok[list[models.PriceResponse], models.ErrorResponse](prices)
 
     async def get_compressed_historical_price(
         self,
@@ -148,14 +148,12 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         )
 
         if "error" in data:
-            return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](
-                None, models.ErrorResponse.from_raw(data)
+            return result.Err[list[models.CompressedPriceResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
             )
 
         prices: list[models.CompressedPriceResponse] = []
         for key, value in data.items():
             prices.extend(models.CompressedPriceResponse.from_raw({key: pair}) for pair in value)
 
-        return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](
-            prices, None
-        )
+        return result.Ok[list[models.CompressedPriceResponse], models.ErrorResponse](prices)

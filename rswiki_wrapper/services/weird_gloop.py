@@ -4,6 +4,7 @@ import typing as t
 
 from rswiki_wrapper import contracts
 from rswiki_wrapper import enums
+from rswiki_wrapper import errors
 from rswiki_wrapper import models
 from rswiki_wrapper import result
 from rswiki_wrapper import routes
@@ -42,9 +43,19 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         return models.SocialFeedResponse.from_raw(data)
 
     async def get_latest_price(
-        self, game: enums.GameType, *, id: int | None = None, name: str | None = None
+        self, game: enums.GameType, *ids_or_names: str | int
     ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
-        params = {k: v for k, v in (("id", id), ("name", name)) if v}
+        if not ids_or_names:
+            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
+
+        params: dict[str, str | int] = {}
+        # Weird gloop allows searching multiple items with pipes
+        if ids := "|".join(str(i) for i in ids_or_names if isinstance(i, int)):
+            params["id"] = ids
+
+        if names := "|".join(n for n in ids_or_names if isinstance(n, str)):
+            params["name"] = names
+
         route = routes.LATEST_PRICE.compile(game.value).with_params(params)
         data = await self._fetch(route)
 

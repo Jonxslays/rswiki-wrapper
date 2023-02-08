@@ -167,21 +167,29 @@ class Client:
         """
         return await self._weird_gloop.get_latest_exchange_update()
 
-    async def get_social_feed(self, page: int) -> models.SocialFeedResponse:
+    async def get_social_feed(self, page: int) -> models.PaginatedSocialFeedResponse:
         """Gets a paginated list of Runescape related social media posts/items.
 
         Args:
             page (`int`): The page of data to retrieve
 
         Returns:
-            `models.SocialFeedResponse`: The requested posts/articles and pagination
-                metadata. Typically 10 items are included in the history.
+            `models.PaginatedSocialFeedResponse`: The requested posts/articles and
+                pagination metadata. Typically 10 items are included in the history.
         """
         return await self._weird_gloop.get_social_feed(page)
 
+    async def get_latest_social_feed(self) -> models.SocialFeedResponse:
+        """Gets the latest Runescape related social media post/item.
+
+        Returns:
+            `models.SocialFeedResponse`: The latest post/article.
+        """
+        return await self._weird_gloop.get_latest_social_feed()
+
     async def get_latest_price(
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
-    ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
         """Gets the latest price for an item(s) by id or name.
 
         ```py
@@ -204,7 +212,7 @@ class Client:
                 The locale to use, if `None` the API uses English. Defaults to None.
 
         Returns:
-            `result.Result[list[models.LatestPriceResponse], models.ErrorResponse]`:
+            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the latest price response models,
                 or an error.
         """

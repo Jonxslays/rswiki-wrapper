@@ -24,7 +24,11 @@ class WeirdGloopContract(abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def get_social_feed(self, page: int) -> models.SocialFeedResponse:
+    async def get_social_feed(self, page: int) -> models.PaginatedSocialFeedResponse:
+        ...
+
+    @abc.abstractmethod
+    async def get_latest_social_feed(self) -> models.SocialFeedResponse:
         ...
 
     @abc.abstractmethod
@@ -34,5 +38,5 @@ class WeirdGloopContract(abc.ABC):
     @abc.abstractmethod
     async def get_latest_price(
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
-    ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
         ...

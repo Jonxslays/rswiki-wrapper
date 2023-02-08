@@ -10,9 +10,9 @@ from rswiki_wrapper import enums
 __all__ = (
     "ErrorResponse",
     "LatestExchangeUpdateResponse",
-    "LatestPriceResponse",
+    "PaginatedSocialFeedResponse",
     "PaginationMeta",
-    "SocialFeedData",
+    "PriceResponse",
     "SocialFeedResponse",
     "VosResponse",
     "VosHistoryResponse",
@@ -98,7 +98,7 @@ class LatestExchangeUpdateResponse(BaseResponse):
 
 
 @dataclass(slots=True, init=False)
-class SocialFeedData(BaseResponse):
+class SocialFeedResponse(BaseResponse):
     id: int
     url: str
     title: str
@@ -113,10 +113,10 @@ class SocialFeedData(BaseResponse):
     date_added: datetime
 
     @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedData:
+    def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedResponse:
         self = cls()
-        self.expiry_date = self._from_iso(data.pop("expiryDate", None))
-        self.date_published = self._from_iso(data.pop("datePublished", None))
+        self.expiry_date = self._from_iso_maybe(data.pop("expiryDate", None))
+        self.date_published = self._from_iso_maybe(data.pop("datePublished", None))
         self.date_added = self._from_iso(data.pop("dateAdded"))
 
         for k, v in data.items():
@@ -131,20 +131,20 @@ class SocialFeedData(BaseResponse):
 
 
 @dataclass(slots=True, init=False)
-class SocialFeedResponse(BaseResponse):
+class PaginatedSocialFeedResponse(BaseResponse):
     pagination: PaginationMeta
-    data: list[SocialFeedData]
+    data: list[SocialFeedResponse]
 
     @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedResponse:
+    def from_raw(cls, data: dict[str, t.Any]) -> PaginatedSocialFeedResponse:
         self = cls()
         self.pagination = PaginationMeta.from_raw(data["pagination"])
-        self.data = [SocialFeedData.from_raw(feed) for feed in data["data"]]
+        self.data = [SocialFeedResponse.from_raw(feed) for feed in data["data"]]
         return self
 
 
 @dataclass(slots=True, init=False)
-class LatestPriceResponse(BaseResponse):
+class PriceResponse(BaseResponse):
     id: str
     price: int
     volume: int | None
@@ -152,7 +152,7 @@ class LatestPriceResponse(BaseResponse):
     identifier: str
 
     @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> LatestPriceResponse:
+    def from_raw(cls, data: dict[str, t.Any]) -> PriceResponse:
         self = cls()
 
         for attr in self.__dataclass_fields__:

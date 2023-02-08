@@ -37,14 +37,19 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         data = await self._fetch(route)
         return models.LatestExchangeUpdateResponse.from_raw(data)
 
-    async def get_social_feed(self, page: int) -> models.SocialFeedResponse:
+    async def get_social_feed(self, page: int) -> models.PaginatedSocialFeedResponse:
         route = routes.SOCIAL_FEED.compile().with_params({"page": page})
+        data = await self._fetch(route)
+        return models.PaginatedSocialFeedResponse.from_raw(data)
+
+    async def get_latest_social_feed(self) -> models.SocialFeedResponse:
+        route = routes.LATEST_SOCIAL_FEED.compile()
         data = await self._fetch(route)
         return models.SocialFeedResponse.from_raw(data)
 
     async def get_latest_price(
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
-    ) -> result.Result[list[models.LatestPriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
         if not ids_or_names:
             raise errors.MissingArgumentError("You must specify at least 1 id or name.")
 
@@ -65,14 +70,14 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         data = await self._fetch(route)
 
         if "error" in data:
-            return result.Result[list[models.LatestPriceResponse], models.ErrorResponse](
+            return result.Result[list[models.PriceResponse], models.ErrorResponse](
                 None, models.ErrorResponse.from_raw(data)
             )
 
-        prices: list[models.LatestPriceResponse] = []
+        prices: list[models.PriceResponse] = []
         for key, value in data.items():
-            response = models.LatestPriceResponse.from_raw(value)
+            response = models.PriceResponse.from_raw(value)
             response.identifier = key
             prices.append(response)
 
-        return result.Result[list[models.LatestPriceResponse], models.ErrorResponse](prices, None)
+        return result.Result[list[models.PriceResponse], models.ErrorResponse](prices, None)

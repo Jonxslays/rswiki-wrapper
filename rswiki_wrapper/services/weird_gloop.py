@@ -19,6 +19,31 @@ class WeirdGloopService(contracts.WeirdGloopContract):
     def __init__(self, http_service: contracts.HttpContract) -> None:
         self._http = http_service
 
+    async def _set_price_params_and_fetch(
+        self,
+        game: enums.GameType,
+        time_filter: enums.TimeFilter,
+        *,
+        id: int | None,
+        name: str | None,
+        locale: enums.Locale | None,
+        params: dict[str, str | int],
+    ) -> dict[str, t.Any]:
+        if not id and not name:
+            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
+
+        if id:
+            params["id"] = id
+
+        if name:
+            params["name"] = name
+
+        if locale:
+            params["lang"] = locale.value
+
+        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
+        return await self._fetch(route)
+
     async def _fetch(self, route: routes.CompiledRoute) -> dict[str, t.Any]:
         return await self._http.fetch(route)
 
@@ -91,21 +116,9 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         name: str | None,
         locale: enums.Locale | None,
     ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
-        if not id and not name:
-            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
-
-        params: dict[str, str | int] = {}
-        if id:
-            params["id"] = id
-
-        if name:
-            params["name"] = name
-
-        if locale:
-            params["lang"] = locale.value
-
-        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
-        data = await self._fetch(route)
+        data = await self._set_price_params_and_fetch(
+            game, time_filter, id=id, name=name, locale=locale, params={}
+        )
 
         if "error" in data:
             return result.Result[list[models.PriceResponse], models.ErrorResponse](
@@ -130,21 +143,9 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         name: str | None,
         locale: enums.Locale | None,
     ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
-        if not id and not name:
-            raise errors.MissingArgumentError("You must specify at least 1 id or name.")
-
-        params: dict[str, str | int] = {"compress": "true"}
-        if id:
-            params["id"] = id
-
-        if name:
-            params["name"] = name
-
-        if locale:
-            params["lang"] = locale.value
-
-        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
-        data = await self._fetch(route)
+        data = await self._set_price_params_and_fetch(
+            game, time_filter, id=id, name=name, locale=locale, params={"compress": "true"}
+        )
 
         if "error" in data:
             return result.Result[list[models.CompressedPriceResponse], models.ErrorResponse](

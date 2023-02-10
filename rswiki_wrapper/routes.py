@@ -57,3 +57,4 @@ LATEST_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/
 SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social")
 LATEST_SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social/last")
 HISTORICAL_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/{}")
+TMS_CURRENT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/current")

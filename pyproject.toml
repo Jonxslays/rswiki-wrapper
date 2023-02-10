@@ -22,3 +22,10 @@ dependencies = [
 
 [tool.setuptools.packages]
 find = {}  # Scan the project directory with the default parameters
+
+[tool.black]
+line-length = 99
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportImportCycles = false

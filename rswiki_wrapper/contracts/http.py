@@ -34,4 +34,4 @@ class HttpContract(abc.ABC):
 
     @abc.abstractmethod
     async def close(self) -> None:
-        ...
+        """Cleans up any resources used by the http implementation."""

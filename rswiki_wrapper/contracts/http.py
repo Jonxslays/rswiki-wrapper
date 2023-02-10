@@ -9,7 +9,13 @@ __all__ = ("HttpContract",)
 
 
 class HttpContract(abc.ABC):
-    """The contract required to satisfy the underlying http client."""
+    """The contract required to satisfy the underlying http client.
+
+    Args:
+        project_name (`str`): The project name to use in the requst headers.
+
+        contact_info (`str`): The contact info to use in the request headers.
+    """
 
     @abc.abstractmethod
     def __init__(self, project_name: str, contact_info: str) -> None:

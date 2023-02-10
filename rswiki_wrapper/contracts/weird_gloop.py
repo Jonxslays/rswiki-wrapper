@@ -11,16 +11,16 @@ __all__ = ("WeirdGloopContract",)
 
 
 class WeirdGloopContract(abc.ABC):
-    """The contract required to satify the weird gloop API."""
+    """The contract required to satify the weird gloop API.
+
+    Args:
+        http_service (`HttpContract`): The http service to use to satify
+            this contract.
+    """
 
     @abc.abstractmethod
     def __init__(self, http_service: HttpContract) -> None:
-        """Initializes a new instance of this contract.
-
-        Args:
-            http_service (`HttpContract`): The http service to use to satify
-                this contract.
-        """
+        ...
 
     @abc.abstractmethod
     async def get_vos(self) -> models.VosResponse:

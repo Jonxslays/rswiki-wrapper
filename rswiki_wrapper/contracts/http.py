@@ -29,7 +29,7 @@ class HttpContract(abc.ABC):
             route (`routes.CompiledRoute`): The route to request.
 
         Returns:
-            dict[str, t.Any]: The resulting json data.
+            `dict[str, t.Any]`: The resulting json data.
         """
 
     @abc.abstractmethod

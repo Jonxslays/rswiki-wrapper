@@ -54,14 +54,46 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         count: int | None,
         params: dict[str, str | int],
     ) -> dict[str, t.Any]:
-        if count is not None and end_at is not None:
-            raise errors.ConflictingArgumentError("count", "end_at")
-
         if not names:
             raise errors.MissingArgumentError("please provide one or more names.")
 
+        params["name"] = "|".join(names)
         if locale:
             params["lang"] = locale.value
+
+        self._set_generic_tms_params(start_at, end_at, count, params)
+        route = routes.TMS_SEARCH.compile().with_params(params)
+        return await self._fetch(route)
+
+    async def _set_tms_id_params_and_fetch(
+        self,
+        ids: tuple[int],
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+        params: dict[str, str | int],
+    ) -> dict[str, t.Any]:
+        if not ids:
+            raise errors.MissingArgumentError("please provide one or more ids.")
+
+        params["id"] = "|".join(str(i) for i in ids)
+        if not params.get("lang"):
+            # We're alrady doing a full search
+            params["lang"] = "id"
+
+        self._set_generic_tms_params(start_at, end_at, count, params)
+        route = routes.TMS_SEARCH.compile().with_params(params)
+        return await self._fetch(route)
+
+    def _set_generic_tms_params(
+        self,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+        params: dict[str, str | int],
+    ) -> None:
+        if count is not None and end_at is not None:
+            raise errors.ConflictingArgumentError("count", "end_at")
 
         if start_at:
             params["start"] = start_at.isoformat()
@@ -71,9 +103,6 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
         if count:
             params["number"] = count
-
-        route = routes.TMS_SEARCH.compile().with_params(params)
-        return await self._fetch(route)
 
     async def _fetch(self, route: routes.CompiledRoute) -> dict[str, t.Any]:
         return await self._http.fetch(route)
@@ -207,13 +236,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         end_at: datetime | None,
         count: int | None,
     ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
-        if count is not None and end_at is not None:
-            raise errors.ConflictingArgumentError("count", "end_at")
-
-        if not names:
-            raise errors.MissingArgumentError("please provide one or more names.")
-
-        params: dict[str, str | int] = {"name": "|".join(names)}
+        params: dict[str, str | int] = {}
         data = await self._set_tms_name_params_and_fetch(
             names, locale, start_at, end_at, count, params
         )
@@ -229,4 +252,50 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
         return result.Ok[list[models.TmsSearchResponse], models.ErrorResponse](
             [models.TmsSearchResponse.from_raw(tms) for tms in buffer]
+        )
+
+    async def search_tms_by_id(
+        self,
+        *ids: int,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        params: dict[str, str | int] = {}
+        data = await self._set_tms_id_params_and_fetch(ids, start_at, end_at, count, params)
+
+        if "error" in data:
+            return result.Err[list[models.TmsSearchResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
+            )
+
+        # This endpoint returns a dict on error, or list of dicts on success
+        buffer: list[dict[str, str]] = data  # type: ignore
+        assert isinstance(buffer, list)
+
+        return result.Ok[list[models.TmsSearchResponse], models.ErrorResponse](
+            [models.TmsSearchResponse.from_raw(tms) for tms in buffer]
+        )
+
+    async def search_tms_by_id_full(
+        self,
+        *ids: int,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchFullResponse], models.ErrorResponse]:
+        params: dict[str, str | int] = {"lang": "full"}
+        data = await self._set_tms_id_params_and_fetch(ids, start_at, end_at, count, params)
+
+        if "error" in data:
+            return result.Err[list[models.TmsSearchFullResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
+            )
+
+        # This endpoint returns a dict on error, or list of dicts on success
+        buffer: list[dict[str, str]] = data  # type: ignore
+        assert isinstance(buffer, list)
+
+        return result.Ok[list[models.TmsSearchFullResponse], models.ErrorResponse](
+            [models.TmsSearchFullResponse.from_raw(tms) for tms in buffer]
         )

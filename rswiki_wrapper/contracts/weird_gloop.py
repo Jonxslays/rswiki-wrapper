@@ -203,11 +203,11 @@ class WeirdGloopContract(abc.ABC):
 
         ```py
         # Example
-        await client.get_latest_price(
+        await client.search_tms_by_name(
             "Slayer VIP Coupon", "Harmonic Dust", locale=enums.Locale.EN
         )
 
-        await client.get_latest_price("Cristal de anima", locale=enums.Locale.PT)
+        await client.search_tms_by_name("Cristal de anima", locale=enums.Locale.PT)
         ```
 
         Args:
@@ -227,5 +227,71 @@ class WeirdGloopContract(abc.ABC):
 
         Returns:
             `result.Result[list[models.TmsSearchResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
+        """
+
+    @abc.abstractmethod
+    async def search_tms_by_id(
+        self,
+        *ids: int,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history and future
+        stock by id.
+
+        ```py
+        # Example
+        await client.search_tms_by_id(42274, 34918)
+        ```
+
+        Args:
+            *ids: (`int`): The ids to search for.
+
+        Keyword Args:
+            start_at (`datetime | None`): The date to begin the search at.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both.
+
+        Returns:
+            `result.Result[list[models.TmsSearchResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
+        """
+
+    @abc.abstractmethod
+    async def search_tms_by_id_full(
+        self,
+        *ids: int,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchFullResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history and future
+        stock by id. Returns both English and Portuguese names.
+
+        ```py
+        # Example
+        await client.search_tms_by_id_full(42274, 34918)
+        ```
+
+        Args:
+            *ids: (`int`): The ids to search for.
+
+        Keyword Args:
+            start_at (`datetime | None`): The date to begin the search at.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both.
+
+        Returns:
+            `result.Result[list[models.TmsSearchFullResponse], models.ErrorResponse]`:
                 A list of the items if found, or an error.
         """

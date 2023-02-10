@@ -357,3 +357,73 @@ class Client:
         return await self._weird_gloop.search_tms_by_name(
             *names, locale=locale, start_at=start_at, end_at=end_at, count=count
         )
+
+    async def search_tms_by_id(
+        self,
+        *ids: int,
+        start_at: datetime | None = None,
+        end_at: datetime | None = None,
+        count: int | None = None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history and future
+        stock by id.
+
+        ```py
+        # Example
+        await client.search_tms_by_id(42274, 34918)
+        ```
+
+        Args:
+            *ids: (`int`): The ids to search for.
+
+        Keyword Args:
+            start_at (`datetime | None`): The date to begin the search at.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both.
+
+        Returns:
+            `result.Result[list[models.TmsSearchResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
+        """
+        return await self._weird_gloop.search_tms_by_id(
+            *ids, start_at=start_at, end_at=end_at, count=count
+        )
+
+    async def search_tms_by_id_full(
+        self,
+        *ids: int,
+        start_at: datetime | None = None,
+        end_at: datetime | None = None,
+        count: int | None = None,
+    ) -> result.Result[list[models.TmsSearchFullResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history and future
+        stock by id. Returns both English and Portuguese names.
+
+        ```py
+        # Example
+        await client.search_tms_by_id_full(42274, 34918)
+        ```
+
+        Args:
+            *ids: (`int`): The ids to search for.
+
+        Keyword Args:
+            start_at (`datetime | None`): The date to begin the search at.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both.
+
+        Returns:
+            `result.Result[list[models.TmsSearchFullResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
+        """
+        return await self._weird_gloop.search_tms_by_id_full(
+            *ids, start_at=start_at, end_at=end_at, count=count
+        )

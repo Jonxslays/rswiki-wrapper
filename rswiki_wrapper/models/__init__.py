@@ -11,6 +11,7 @@ __all__ = (
     "SocialFeedResponse",
     "TmsResponse",
     "TmsSearchResponse",
+    "TmsSearchFullResponse",
     "VosResponse",
     "VosHistoryResponse",
 )

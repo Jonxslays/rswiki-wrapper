@@ -208,6 +208,7 @@ class Client:
             *ids_or_names (`str | int`): The ids as integers, or names as strings to get
                 the price for.
 
+        Keyword Args:
             locale (`enums.Locale | None`):
                 The locale to use, if `None` the API uses English. Defaults to None.
                     Only useful if names were used.
@@ -216,6 +217,10 @@ class Client:
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the latest price response models,
                 or an error.
+
+        Raises:
+            `errors.MissingArgumentError`: If no `ids_or_names` were passed to this
+                function.
         """
         return await self._weird_gloop.get_latest_price(game, *ids_or_names, locale=locale)
 
@@ -228,6 +233,34 @@ class Client:
         name: str | None = None,
         locale: enums.Locale | None = None,
     ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+        """Gets the historical price for an item by id or name.
+
+        NOTE:
+            If both id and name are passed to this function, id will take precedence.
+
+        Args:
+            game (`enums.GameType`): The game type to check the price on.
+
+            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+
+        Keyword Args:
+            id (`int | None`): The item id to get the historical price for.
+
+            name (`string | None`): The item name to get the historical price for.
+
+            locale (`enums.Locale | None`):
+                The locale to use, if `None` the API uses English. Defaults to None.
+                    Only useful if names were used.
+
+        Returns:
+            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
+                A result containing either a list of the historical price response
+                models, or an error.
+
+        Raises:
+            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
+                to this function.
+        """
         return await self._weird_gloop.get_historical_price(
             game, time_filter, id=id, name=name, locale=locale
         )
@@ -241,6 +274,34 @@ class Client:
         name: str | None = None,
         locale: enums.Locale | None = None,
     ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
+        """Gets the compressed historical price for an item by id or name.
+
+        NOTE:
+            If both id and name are passed to this function, id will take precedence.
+
+        Args:
+            game (`enums.GameType`): The game type to check the price on.
+
+            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+
+        Keyword Args:
+            id (`int | None`): The item id to get the historical price for.
+
+            name (`string | None`): The item name to get the historical price for.
+
+            locale (`enums.Locale | None`):
+                The locale to use, if `None` the API uses English. Defaults to None.
+                    Only useful if names were used.
+
+        Returns:
+            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
+                A result containing either a list of the compressed historical
+                price response models, or an error.
+
+        Raises:
+            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
+                to this function.
+        """
         return await self._weird_gloop.get_compressed_historical_price(
             game, time_filter, id=id, name=name, locale=locale
         )

@@ -1,9 +1,11 @@
+"""The result type and its variants."""
+
 from __future__ import annotations
 
 import abc
 import typing as t
 
-from . import errors
+from rswiki_wrapper import errors
 
 __all__ = ("Err", "Ok", "Result")
 

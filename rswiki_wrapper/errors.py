@@ -1,6 +1,14 @@
-from . import routes
+"""Errors that can be raised by the library."""
 
-__all__ = ("HttpError", "MissingArgumentError", "RsWikiError", "UnwrapError")
+from rswiki_wrapper import routes
+
+__all__ = (
+    "ConflictingArgumentError",
+    "HttpError",
+    "MissingArgumentError",
+    "RsWikiError",
+    "UnwrapError",
+)
 
 
 class RsWikiError(Exception):
@@ -26,3 +34,10 @@ class MissingArgumentError(RsWikiError):
 
     def __init__(self, message: str) -> None:
         super().__init__(f"Missing required argument: {message}")
+
+
+class ConflictingArgumentError(RsWikiError):
+    """Raised when one or more arguments conflict with each other."""
+
+    def __init__(self, *args: str) -> None:
+        super().__init__(f"Arguments conflict: {', '.join(args)}")

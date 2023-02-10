@@ -1,3 +1,5 @@
+"""Various enums used by the library."""
+
 from enum import Enum
 
 

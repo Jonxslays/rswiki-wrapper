@@ -1,9 +1,11 @@
+"""Routes mapping to the various API endpoints."""
+
 from __future__ import annotations
 
 import typing as t
 from dataclasses import dataclass
 
-from .enums import BaseUrl
+from rswiki_wrapper.enums import BaseUrl
 
 __all__ = (
     "CompiledRoute",
@@ -72,3 +74,4 @@ LATEST_SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/soci
 HISTORICAL_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/{}")
 TMS_CURRENT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/current")
 TMS_NEXT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/next")
+TMS_SEARCH: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/search")

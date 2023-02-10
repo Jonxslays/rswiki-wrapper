@@ -3,17 +3,24 @@ from __future__ import annotations
 import abc
 
 from .http import HttpContract
-from rswiki_wrapper import enums
-from rswiki_wrapper import models
-from rswiki_wrapper import result
+from .. import enums
+from .. import models
+from .. import result
 
 __all__ = ("WeirdGloopContract",)
 
 
 class WeirdGloopContract(abc.ABC):
+    """The contract required to satify the weird gloop API."""
+
     @abc.abstractmethod
     def __init__(self, http_service: HttpContract) -> None:
-        ...
+        """Initializes a new instance of this contract.
+
+        Args:
+            http_service (`HttpContract`): The http service to use to satify
+                this contract.
+        """
 
     @abc.abstractmethod
     async def get_vos(self) -> models.VosResponse:
@@ -93,10 +100,6 @@ class WeirdGloopContract(abc.ABC):
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the latest price response models,
                 or an error.
-
-        Raises:
-            `errors.MissingArgumentError`: If no `ids_or_names` were passed to this
-                function.
         """
 
     @abc.abstractmethod
@@ -132,10 +135,6 @@ class WeirdGloopContract(abc.ABC):
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the historical price response
                 models, or an error.
-
-        Raises:
-            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
-                to this function.
         """
 
     @abc.abstractmethod
@@ -171,8 +170,20 @@ class WeirdGloopContract(abc.ABC):
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the compressed historical
                 price response models, or an error.
+        """
 
-        Raises:
-            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
-                to this function.
+    @abc.abstractmethod
+    async def get_current_tms(self) -> list[models.TmsResponse]:
+        """Gets the current Travelling Merchant Shop items.
+
+        Returns:
+            `list[models.TmsResponse]`: The current TMS items.
+        """
+
+    @abc.abstractmethod
+    async def get_next_tms(self) -> list[models.TmsResponse]:
+        """Gets the Travelling Merchant Shop items for tomorrow.
+
+        Returns:
+            `list[models.TmsResponse]`: Tomorrow's TMS items.
         """

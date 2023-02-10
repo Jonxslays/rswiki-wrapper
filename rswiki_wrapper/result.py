@@ -3,7 +3,9 @@ from __future__ import annotations
 import abc
 import typing as t
 
-from rswiki_wrapper import errors
+from . import errors
+
+__all__ = ("Err", "Ok", "Result")
 
 T = t.TypeVar("T")
 E = t.TypeVar("E")

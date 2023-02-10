@@ -47,19 +47,6 @@ class TimeFilter(Enum):
     LAST_90_DAYS = "last90d"
 
 
-class TmsQuery(Enum):
-    """Query options for the Travelling Merchant Shop."""
-
-    EN = "en"
-    """The item names in English."""
-    PT = "pt"
-    """The item names in Portuguese."""
-    ID = "id"
-    """The item id's"""
-    FULL = "full"
-    """The item names and id's in both English and Portuguese."""
-
-
 class VosDistrict(Enum):
     """The 8 Voice of Seren discricts."""
 

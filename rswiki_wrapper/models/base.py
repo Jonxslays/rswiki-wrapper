@@ -5,9 +5,13 @@ import typing as t
 from dataclasses import dataclass
 from datetime import datetime
 
+__all__ = ("BaseResponse",)
+
 
 @dataclass(slots=True, init=False)
 class BaseResponse(abc.ABC):
+    """All response models inherit from this clas.."""
+
     @classmethod
     @abc.abstractmethod
     def from_raw(cls, data: dict[str, t.Any]) -> BaseResponse:

@@ -7,6 +7,7 @@ __all__ = (
     "PaginationMeta",
     "PriceResponse",
     "SocialFeedResponse",
+    "TmsResponse",
     "VosResponse",
     "VosHistoryResponse",
 )

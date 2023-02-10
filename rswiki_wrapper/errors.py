@@ -1,4 +1,6 @@
-from rswiki_wrapper import routes
+from . import routes
+
+__all__ = ("HttpError", "MissingArgumentError", "RsWikiError", "UnwrapError")
 
 
 class RsWikiError(Exception):

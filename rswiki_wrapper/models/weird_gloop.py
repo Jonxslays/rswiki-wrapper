@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from .base import BaseResponse
-from rswiki_wrapper import enums
+from .. import enums
 
 __all__ = (
     "CompressedPriceResponse",
@@ -15,6 +15,7 @@ __all__ = (
     "PaginationMeta",
     "PriceResponse",
     "SocialFeedResponse",
+    "TmsResponse",
     "VosResponse",
     "VosHistoryResponse",
 )
@@ -249,4 +250,24 @@ class CompressedPriceResponse(BaseResponse):
             self.timestamp = self._dt_from_epoch(value[0], True)
             self.price = value[1]
 
+        return self
+
+
+@dataclass(slots=True, init=False)
+class TmsResponse(BaseResponse):
+    """A Travelling Merchant Shop item."""
+
+    id: int
+    """The item id."""
+    en: str
+    """The item name in English."""
+    pt: str
+    """The item name in Portuguese."""
+
+    @classmethod
+    def from_raw(cls, data: dict[str, t.Any]) -> TmsResponse:
+        self = cls()
+        self.id = int(data["id"])
+        self.en = data["en"]
+        self.pt = data["pt"]
         return self

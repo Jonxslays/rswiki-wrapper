@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import typing as t
 
-from rswiki_wrapper import contracts
-from rswiki_wrapper import enums
-from rswiki_wrapper import errors
-from rswiki_wrapper import models
-from rswiki_wrapper import result
-from rswiki_wrapper import routes
+from .. import contracts
+from .. import enums
+from .. import errors
+from .. import models
+from .. import result
+from .. import routes
 
 __all__ = ("WeirdGloopService",)
 
@@ -157,3 +157,13 @@ class WeirdGloopService(contracts.WeirdGloopContract):
             prices.extend(models.CompressedPriceResponse.from_raw({key: pair}) for pair in value)
 
         return result.Ok[list[models.CompressedPriceResponse], models.ErrorResponse](prices)
+
+    async def get_current_tms(self) -> list[models.TmsResponse]:
+        route = routes.TMS_CURRENT.compile().with_params({"lang": "full"})
+        data: list[dict[str, str]] = await self._fetch(route)  # type: ignore
+        return [models.TmsResponse.from_raw(item) for item in data]
+
+    async def get_next_tms(self) -> list[models.TmsResponse]:
+        route = routes.TMS_NEXT.compile().with_params({"lang": "full"})
+        data: list[dict[str, str]] = await self._fetch(route)  # type: ignore
+        return [models.TmsResponse.from_raw(item) for item in data]

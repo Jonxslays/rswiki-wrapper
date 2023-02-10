@@ -3,11 +3,13 @@ from __future__ import annotations
 import sys
 import typing as t
 
-from rswiki_wrapper import contracts
-from rswiki_wrapper import enums
-from rswiki_wrapper import models
-from rswiki_wrapper import result
-from rswiki_wrapper import services
+from . import contracts
+from . import enums
+from . import models
+from . import result
+from . import services
+
+__all__ = ("Client",)
 
 
 class Client:
@@ -217,10 +219,6 @@ class Client:
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the latest price response models,
                 or an error.
-
-        Raises:
-            `errors.MissingArgumentError`: If no `ids_or_names` were passed to this
-                function.
         """
         return await self._weird_gloop.get_latest_price(game, *ids_or_names, locale=locale)
 
@@ -256,10 +254,6 @@ class Client:
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the historical price response
                 models, or an error.
-
-        Raises:
-            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
-                to this function.
         """
         return await self._weird_gloop.get_historical_price(
             game, time_filter, id=id, name=name, locale=locale
@@ -297,11 +291,23 @@ class Client:
             `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the compressed historical
                 price response models, or an error.
-
-        Raises:
-            `errors.MissingArgumentError`: If one of `id` or `name` were not passed
-                to this function.
         """
         return await self._weird_gloop.get_compressed_historical_price(
             game, time_filter, id=id, name=name, locale=locale
         )
+
+    async def get_current_tms(self) -> list[models.TmsResponse]:
+        """Gets the current Travelling Merchant Shop items.
+
+        Returns:
+            `list[models.TmsResponse]`: The current TMS items.
+        """
+        return await self._weird_gloop.get_current_tms()
+
+    async def get_next_tms(self) -> list[models.TmsResponse]:
+        """Gets the Travelling Merchant Shop items for tomorrow.
+
+        Returns:
+            `list[models.TmsResponse]`: Tomorrow's TMS items.
+        """
+        return await self._weird_gloop.get_next_tms()

@@ -3,7 +3,20 @@ from __future__ import annotations
 import typing as t
 from dataclasses import dataclass
 
-from rswiki_wrapper.enums import BaseUrl
+from .enums import BaseUrl
+
+__all__ = (
+    "CompiledRoute",
+    "Route",
+    "VOS",
+    "VOS_HISTORY",
+    "LATEST_EXCHANGE_UPDATE",
+    "LATEST_PRICE",
+    "SOCIAL_FEED",
+    "LATEST_SOCIAL_FEED",
+    "HISTORICAL_PRICE",
+    "TMS_CURRENT",
+)
 
 
 @dataclass(slots=True)
@@ -58,3 +71,4 @@ SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social")
 LATEST_SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social/last")
 HISTORICAL_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/{}")
 TMS_CURRENT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/current")
+TMS_NEXT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/next")

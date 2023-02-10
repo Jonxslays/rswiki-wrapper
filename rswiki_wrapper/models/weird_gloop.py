@@ -22,8 +22,12 @@ __all__ = (
 
 @dataclass(slots=True, init=False)
 class ErrorResponse(BaseResponse):
+    """An error returned by the weird gloop API."""
+
     success: bool
+    """Whether the request was succesful, always `False`."""
     error: str
+    """The error message."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> ErrorResponse:
@@ -37,9 +41,14 @@ class ErrorResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class PaginationMeta(BaseResponse):
+    """Metadata sent with paginated responses."""
+
     has_more: bool
+    """Whether or not there are more pages."""
     total_pages: int
+    """The total number of pages available."""
     total_items: int
+    """The total number of items available."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> PaginationMeta:
@@ -53,9 +62,14 @@ class PaginationMeta(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class VosResponse(BaseResponse):
+    """Details the currently active Voice of Seren districts."""
+
     timestamp: datetime
+    """When these districts became active."""
     district1: enums.VosDistrict
+    """The first active district."""
     district2: enums.VosDistrict
+    """The second active district."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> VosResponse:
@@ -72,8 +86,12 @@ class VosResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class VosHistoryResponse(BaseResponse):
+    """A paginated history of the active Voice of Seren districts."""
+
     pagination: PaginationMeta
+    """"The pagination metadata."""
     data: list[VosResponse]
+    """A list of the historically active districts."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> VosHistoryResponse:
@@ -85,10 +103,16 @@ class VosHistoryResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class LatestExchangeUpdateResponse(BaseResponse):
+    """The latest grand exchange update time for each game type."""
+
     rs: datetime
+    """Runescape 3's latest update."""
     osrs: datetime
+    """Oldschool Runescape's latest update."""
     rs_fsw_2022: datetime
+    """Runescape 3 Fresh Start World's latest update."""
     osrs_fsw_2022: datetime
+    """Oldschool Runescape Fresh Start World's latest update."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> LatestExchangeUpdateResponse:
@@ -102,18 +126,32 @@ class LatestExchangeUpdateResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class SocialFeedResponse(BaseResponse):
+    """A Runescape related social media post or article."""
+
     id: int
+    """The post id."""
     url: str
+    """The url of the post."""
     title: str
+    """The title of the post."""
     excerpt: str
+    """An excerpt from the post."""
     author: str | None
+    """The post's author, may be `None`."""
     curator: str
+    """The curator of the post."""
     source: str | None
+    """The source of the post, may be `None`."""
     image: str | None
+    """An image of/from the post, may be `None`."""
     icon: str | None
+    """The icon for the post, may be `None`"""
     expiry_date: datetime | None
+    """The expiry date of the post, may be `None`."""
     date_published: datetime | None
+    """The date the post was published, may be `None`."""
     date_added: datetime
+    """The date the post was added to the API database."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> SocialFeedResponse:
@@ -135,8 +173,12 @@ class SocialFeedResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class PaginatedSocialFeedResponse(BaseResponse):
+    """A paginated list of social media posts/articles."""
+
     pagination: PaginationMeta
+    """The pagination metadata."""
     data: list[SocialFeedResponse]
+    """A list containing the posts."""
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> PaginatedSocialFeedResponse:
@@ -148,11 +190,20 @@ class PaginatedSocialFeedResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class PriceResponse(BaseResponse):
+    """The price information for an item."""
+
     id: str
+    """The items id."""
     price: int
+    """The items price."""
     volume: int | None
+    """The items volume traded, or `None`."""
     timestamp: datetime
+    """The timestamp for this price."""
     identifier: str
+    """The item id as a string, or the item name.
+        - depends how this price was searched.
+    """
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> PriceResponse:
@@ -176,9 +227,16 @@ class PriceResponse(BaseResponse):
 
 @dataclass(slots=True, init=False)
 class CompressedPriceResponse(BaseResponse):
+    """The compressed (less information) price of an item."""
+
     price: int
+    """The items price."""
     timestamp: datetime
+    """The timestamp for this price."""
     identifier: str
+    """The item id as a string, or the item name.
+        - depends how this price was searched.
+    """
 
     @classmethod
     def from_raw(cls, data: dict[str, t.Any]) -> CompressedPriceResponse:

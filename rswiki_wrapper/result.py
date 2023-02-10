@@ -27,6 +27,10 @@ class Result(t.Generic[T, E]):
         self._value = value
         self._error = error
 
+    def __repr__(self) -> str:
+        inner = self._value if self.is_ok else self._error
+        return f"{self.__class__.__name__}({inner})"
+
     @property
     @abc.abstractmethod
     def is_ok(self) -> bool:

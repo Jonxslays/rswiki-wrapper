@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from .base import BaseResponse
-from .. import enums
+from rswiki_wrapper import enums
 
 __all__ = (
     "CompressedPriceResponse",
@@ -16,9 +16,26 @@ __all__ = (
     "PriceResponse",
     "SocialFeedResponse",
     "TmsResponse",
+    "TmsSearchResponse",
     "VosResponse",
     "VosHistoryResponse",
 )
+
+
+PT_MONTH_MAPPING = {
+    "janeiro": "January",
+    "fevereiro": "February",
+    "marchar": "March",
+    "abril": "April",
+    "maio": "May",
+    "junho": "June",
+    "julho": "July",
+    "agosto": "August",
+    "setembro": "Semptember",
+    "outubro": "October",
+    "novembro": "November",
+    "dezembro": "December",
+}
 
 
 @dataclass(slots=True, init=False)
@@ -270,4 +287,35 @@ class TmsResponse(BaseResponse):
         self.id = int(data["id"])
         self.en = data["en"]
         self.pt = data["pt"]
+        return self
+
+
+@dataclass(slots=True, init=False)
+class TmsSearchResponse(BaseResponse):
+    """A Travelling Merchant Shop search response."""
+
+    date: datetime
+    """The date this item was in the Travelling Merchant Shop."""
+    items: list[str]
+    """The items in the shop on that day (could be either names or ids)."""
+
+    def _to_dt(self, date: str) -> datetime:
+        return datetime.strptime(date, "%d %B %Y")
+
+    def _dt_from_pt(self, date: str) -> datetime:
+        day, month, year = date.split(" de ")
+        month = PT_MONTH_MAPPING[month.lower()]
+        return self._to_dt(f"{day} {month} {year}")
+
+    @classmethod
+    def from_raw(cls, data: dict[str, t.Any]) -> TmsSearchResponse:
+        self = cls()
+        self.items = data["items"]
+
+        try:
+            self.date = self._to_dt(data["date"])
+        except ValueError:
+            # This date is in portuguese
+            self.date = self._dt_from_pt(data["date"])
+
         return self

@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import typing as t
 
-from .. import routes
+from rswiki_wrapper import routes
 
 __all__ = ("HttpContract",)
 

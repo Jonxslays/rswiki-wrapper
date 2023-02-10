@@ -1,13 +1,16 @@
+"""The client implementation used by the library."""
+
 from __future__ import annotations
 
 import sys
 import typing as t
+from datetime import datetime
 
-from . import contracts
-from . import enums
-from . import models
-from . import result
-from . import services
+from rswiki_wrapper import contracts
+from rswiki_wrapper import enums
+from rswiki_wrapper import models
+from rswiki_wrapper import result
+from rswiki_wrapper import services
 
 __all__ = ("Client",)
 
@@ -311,3 +314,46 @@ class Client:
             `list[models.TmsResponse]`: Tomorrow's TMS items.
         """
         return await self._weird_gloop.get_next_tms()
+
+    async def search_tms_by_name(
+        self,
+        *names: str,
+        locale: enums.Locale | None = None,
+        start_at: datetime | None = None,
+        end_at: datetime | None = None,
+        count: int | None = None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history by name.
+
+        ```py
+        # Example
+        await client.get_latest_price(
+            "Slayer VIP Coupon", "Harmonic Dust", locale=enums.Locale.EN
+        )
+
+        await client.get_latest_price("Cristal de anima", locale=enums.Locale.PT)
+        ```
+
+        Args:
+            *names: (`str`): The names to search for. For some reason this API endpoint
+                is really picky about capitalization, so be wary of that.
+
+        Keyword Args:
+            locale (`enums.Locale | None`): The locale to use. Will use English if `None`.
+                Defaults to `None`.
+
+            start_at (`datetime | None`): The date to begin the search at. Defaults to `None`.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both. Defaults to `None`.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both. Defaults to `None`.
+
+        Returns:
+            `result.Result[list[models.TmsSearchResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
+        """
+        return await self._weird_gloop.search_tms_by_name(
+            *names, locale=locale, start_at=start_at, end_at=end_at, count=count
+        )

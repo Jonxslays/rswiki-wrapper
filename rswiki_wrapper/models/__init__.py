@@ -1,3 +1,5 @@
+"""Models used by the library to encapsulate API data."""
+
 __all__ = (
     "BaseResponse",
     "CompressedPriceResponse",
@@ -8,6 +10,7 @@ __all__ = (
     "PriceResponse",
     "SocialFeedResponse",
     "TmsResponse",
+    "TmsSearchResponse",
     "VosResponse",
     "VosHistoryResponse",
 )

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import typing as t
+from datetime import datetime
 
-from .. import contracts
-from .. import enums
-from .. import errors
-from .. import models
-from .. import result
-from .. import routes
+from rswiki_wrapper import contracts
+from rswiki_wrapper import enums
+from rswiki_wrapper import errors
+from rswiki_wrapper import models
+from rswiki_wrapper import result
+from rswiki_wrapper import routes
 
 __all__ = ("WeirdGloopService",)
 
@@ -42,6 +43,36 @@ class WeirdGloopService(contracts.WeirdGloopContract):
             params["lang"] = locale.value
 
         route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
+        return await self._fetch(route)
+
+    async def _set_tms_name_params_and_fetch(
+        self,
+        names: tuple[str],
+        locale: enums.Locale | None,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+        params: dict[str, str | int],
+    ) -> dict[str, t.Any]:
+        if count is not None and end_at is not None:
+            raise errors.ConflictingArgumentError("count", "end_at")
+
+        if not names:
+            raise errors.MissingArgumentError("please provide one or more names.")
+
+        if locale:
+            params["lang"] = locale.value
+
+        if start_at:
+            params["start"] = start_at.isoformat()
+
+        if end_at:
+            params["end"] = end_at.isoformat()
+
+        if count:
+            params["number"] = count
+
+        route = routes.TMS_SEARCH.compile().with_params(params)
         return await self._fetch(route)
 
     async def _fetch(self, route: routes.CompiledRoute) -> dict[str, t.Any]:
@@ -167,3 +198,35 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         route = routes.TMS_NEXT.compile().with_params({"lang": "full"})
         data: list[dict[str, str]] = await self._fetch(route)  # type: ignore
         return [models.TmsResponse.from_raw(item) for item in data]
+
+    async def search_tms_by_name(
+        self,
+        *names: str,
+        locale: enums.Locale | None,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        if count is not None and end_at is not None:
+            raise errors.ConflictingArgumentError("count", "end_at")
+
+        if not names:
+            raise errors.MissingArgumentError("please provide one or more names.")
+
+        params: dict[str, str | int] = {"name": "|".join(names)}
+        data = await self._set_tms_name_params_and_fetch(
+            names, locale, start_at, end_at, count, params
+        )
+
+        if "error" in data:
+            return result.Err[list[models.TmsSearchResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
+            )
+
+        # This endpoint returns a dict on error, or list of dicts on success
+        buffer: list[dict[str, str]] = data  # type: ignore
+        assert isinstance(buffer, list)
+
+        return result.Ok[list[models.TmsSearchResponse], models.ErrorResponse](
+            [models.TmsSearchResponse.from_raw(tms) for tms in buffer]
+        )

@@ -4,9 +4,9 @@ import typing as t
 
 import aiohttp
 
-from .. import contracts
-from .. import errors
-from .. import routes
+from rswiki_wrapper import contracts
+from rswiki_wrapper import errors
+from rswiki_wrapper import routes
 
 __all__ = ("HttpService",)
 

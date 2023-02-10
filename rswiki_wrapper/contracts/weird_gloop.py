@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import abc
+from datetime import datetime
 
 from .http import HttpContract
-from .. import enums
-from .. import models
-from .. import result
+from rswiki_wrapper import enums
+from rswiki_wrapper import models
+from rswiki_wrapper import result
 
 __all__ = ("WeirdGloopContract",)
 
@@ -186,4 +187,45 @@ class WeirdGloopContract(abc.ABC):
 
         Returns:
             `list[models.TmsResponse]`: Tomorrow's TMS items.
+        """
+
+    @abc.abstractmethod
+    async def search_tms_by_name(
+        self,
+        *names: str,
+        locale: enums.Locale | None,
+        start_at: datetime | None,
+        end_at: datetime | None,
+        count: int | None,
+    ) -> result.Result[list[models.TmsSearchResponse], models.ErrorResponse]:
+        """Searches for item(s) in the Travelling Merchant Shop history and future
+        stock by name.
+
+        ```py
+        # Example
+        await client.get_latest_price(
+            "Slayer VIP Coupon", "Harmonic Dust", locale=enums.Locale.EN
+        )
+
+        await client.get_latest_price("Cristal de anima", locale=enums.Locale.PT)
+        ```
+
+        Args:
+            *names: (`str`): The names to search for. For some reason this API endpoint
+                is really picky about capitalization, so be wary of that.
+
+        Keyword Args:
+            locale (`enums.Locale | None`): The locale to use. Will use English if `None`.
+
+            start_at (`datetime | None`): The date to begin the search at.
+
+            end_at (`datetime | None`): The date to end the search at. Only this or `count`
+                should be specified, never both.
+
+            count: (`int | None`): The total number of results to return. Only this or `end_at`
+                should be specified, never both.
+
+        Returns:
+            `result.Result[list[models.TmsSearchResponse], models.ErrorResponse]`:
+                A list of the items if found, or an error.
         """

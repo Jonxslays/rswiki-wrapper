@@ -83,4 +83,16 @@ class RealtimeContract(abc.ABC):
     async def get_avg_price_by_id(
         self, id: int, game: enums.TimeSeriesGameType, timestep: enums.TimeSeriesFilter
     ) -> result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
-        ...
+        """Gets the average price data of the item over the given time series.
+
+        Args:
+            id (`int`): The item id to get prices for.
+
+            game (`enums.TimeSeriesGameType`): The game type to check prices for.
+
+            timestep (`enums.TimeSeriesFilter`): The timestep to use for calculating averages.
+
+        Returns:
+            result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
+                A result continaing the price data, or an error if one occurred.
+        """

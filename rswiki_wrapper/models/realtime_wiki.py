@@ -88,10 +88,10 @@ class AveragePriceResponse(BaseResponse):
 
     id: int
     """The item's id."""
-    high: int
-    """The average high price."""
-    low: int
-    """The average low price."""
+    high: int | None
+    """The average high price, or `None` if no avg high price was found."""
+    low: int | None
+    """The average low price,  or `None` if no avg low price was found.."""
     high_volume: int
     """The volume traded at the high price."""
     low_volume: int
@@ -132,15 +132,15 @@ class TimeFilteredPriceResponse(BaseResponse):
 
 
 @dataclass(slots=True, init=False)
-class TimeSeriesPriceResponse(AveragePriceResponse):
+class TimeSeriesPriceResponse(BaseResponse):
     """The average price of the item over the given time series."""
 
     id: int
     """The item's id."""
-    high: int
-    """The average high price."""
-    low: int
-    """The average low price."""
+    high: int | None
+    """The average high price, or `None` if no avg high price was found."""
+    low: int | None
+    """The average low price,  or `None` if no avg low price was found.."""
     high_volume: int
     """The volume traded at the high price."""
     low_volume: int
@@ -152,10 +152,8 @@ class TimeSeriesPriceResponse(AveragePriceResponse):
     def from_raw(cls, data: dict[str, t.Any]) -> TimeSeriesPriceResponse:
         self = cls()
         self.timestamp = self._dt_from_epoch(data["timestamp"])
-        price = AveragePriceResponse.from_raw(data)
-
-        for attr in self.__dataclass_fields__:
-            if attr not in ("timestamp", "id"):
-                setattr(self, attr, getattr(price, attr))
-
+        self.high = data["avgHighPrice"]
+        self.low = data["avgLowPrice"]
+        self.high_volume = data["highPriceVolume"]
+        self.low_volume = data["lowPriceVolume"]
         return self

@@ -1,15 +1,18 @@
 """Models used by the library to encapsulate API data."""
 
 __all__ = (
+    "AveragePriceResponse",
     "BaseResponse",
     "CompressedExchangePriceResponse",
     "ErrorResponse",
     "ExchangePriceResponse",
     "LatestExchangeUpdateResponse",
+    "MappingResponse",
     "PaginatedSocialFeedResponse",
     "PaginationMeta",
     "RealtimePriceResponse",
     "SocialFeedResponse",
+    "TimeFilteredPriceResponse",
     "TmsResponse",
     "TmsSearchResponse",
     "TmsSearchFullResponse",

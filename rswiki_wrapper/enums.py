@@ -52,8 +52,15 @@ class RtGameType(Enum):
     """Fresh start world"""
 
 
-class TimeFilter(Enum):
-    """A length of time to filter by."""
+class RtTimeFilter(Enum):
+    """A length of time to filter by for the realtime API."""
+
+    FIVE_MINS = "5m"
+    ONE_HOUR = "1h"
+
+
+class WgTimeFilter(Enum):
+    """A length of time to filter by for the weird gloop API."""
 
     ALL = "all"
     SAMPLE = "sample"

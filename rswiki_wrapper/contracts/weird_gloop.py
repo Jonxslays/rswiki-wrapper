@@ -107,7 +107,7 @@ class WeirdGloopContract(abc.ABC):
     async def get_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None,
         name: str | None,
@@ -121,7 +121,7 @@ class WeirdGloopContract(abc.ABC):
         Args:
             game (`enums.WgGameType`): The game type to check the price on.
 
-            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+            time_filter (`enums.WgTimeFilter`): The amount of time to get the history for.
 
         Keyword Args:
             id (`int | None`): The item id to get the historical price for.
@@ -142,7 +142,7 @@ class WeirdGloopContract(abc.ABC):
     async def get_compressed_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None,
         name: str | None,
@@ -156,7 +156,7 @@ class WeirdGloopContract(abc.ABC):
         Args:
             game (`enums.WgGameType`): The game type to check the price on.
 
-            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+            time_filter (`enums.WgTimeFilter`): The amount of time to get the history for.
 
         Keyword Args:
             id (`int | None`): The item id to get the historical price for.

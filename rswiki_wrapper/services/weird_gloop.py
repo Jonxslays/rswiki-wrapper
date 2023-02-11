@@ -23,7 +23,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
     async def _set_price_params_and_fetch(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None,
         name: str | None,
@@ -172,7 +172,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
     async def get_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None,
         name: str | None,
@@ -199,7 +199,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
     async def get_compressed_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None,
         name: str | None,

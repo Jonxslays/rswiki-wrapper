@@ -254,7 +254,7 @@ class Client:
     async def get_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None = None,
         name: str | None = None,
@@ -268,7 +268,7 @@ class Client:
         Args:
             game (`enums.WgGameType`): The game type to check the price on.
 
-            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+            time_filter (`enums.WgTimeFilter`): The amount of time to get the history for.
 
         Keyword Args:
             id (`int | None`): The item id to get the historical price for.
@@ -291,7 +291,7 @@ class Client:
     async def get_compressed_historical_exchange_price(
         self,
         game: enums.WgGameType,
-        time_filter: enums.TimeFilter,
+        time_filter: enums.WgTimeFilter,
         *,
         id: int | None = None,
         name: str | None = None,
@@ -305,7 +305,7 @@ class Client:
         Args:
             game (`enums.WgGameType`): The game type to check the price on.
 
-            time_filter (`enums.TimeFilter`): The amount of time to get the history for.
+            time_filter (`enums.WgTimeFilter`): The amount of time to get the history for.
 
         Keyword Args:
             id (`int | None`): The item id to get the historical price for.
@@ -473,4 +473,27 @@ class Client:
             `result.Result[list[models.RealtimePriceResponse], models.ErrorResponse]`:
                 A result containing the list of prices, or an error.
         """
-        return await self._realtime.get_realtime_price(game, id)
+        return await self._realtime.get_price(game, id)
+
+    async def get_realtime_mapping(
+        self, game: enums.RtGameType = enums.RtGameType.OSRS
+    ) -> list[models.MappingResponse]:
+        """Gets a mapping of data from the realtime API.
+
+        Args:
+            game (`enums.RtGameType`): The game type to get the mapping for.
+                Defaults to OSRS.
+
+        Returns:
+            `list[models.MappingResponse]`: A list containing the requested data.
+        """
+        return await self._realtime.get_mapping(game)
+
+    async def get_realtime_avg_price(
+        self,
+        time_filter: enums.RtTimeFilter,
+        game: enums.RtGameType = enums.RtGameType.OSRS,
+        *,
+        timestamp: datetime | None = None,
+    ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
+        return await self._realtime.get_avg_price(game, time_filter, timestamp=timestamp)

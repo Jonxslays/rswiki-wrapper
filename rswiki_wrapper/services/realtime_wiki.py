@@ -60,7 +60,11 @@ class RealtimeService(contracts.RealtimeContract):
         return [models.MappingResponse.from_raw(item) for item in data]
 
     async def get_avg_price(
-        self, game: enums.RtGameType, timeseries: enums.RtTimeFilter, *, timestamp: datetime | None
+        self,
+        game: enums.RtGameType,
+        time_filter: enums.RtTimeFilter,
+        *,
+        timestamp: datetime | None,
     ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
         params: dict[str, str | int] = {}
         if timestamp:
@@ -68,9 +72,11 @@ class RealtimeService(contracts.RealtimeContract):
             epoch = int(timestamp.timestamp())
             params["timestamp"] = epoch - (epoch % 300)
 
-        route = routes.REALTIME_AVG_PRICE.compile(game.value, timeseries.value).with_params(params)
-        data = await self._fetch(route)
+        route = routes.REALTIME_AVG_PRICE.compile(game.value, time_filter.value).with_params(
+            params
+        )
 
+        data = await self._fetch(route)
         if "error" in data:
             return result.Err[models.TimeFilteredPriceResponse, models.ErrorResponse](
                 models.ErrorResponse.from_raw(data)

@@ -15,7 +15,7 @@ class RealtimeContract(abc.ABC):
     """The contract required to satify the realtime wiki API.
 
     Args:
-        http_service (`HttpContract`): The http service to use to satify
+        http_service (`contracts.HttpContract`): The http service to use to satify
             this contract.
     """
 
@@ -47,7 +47,7 @@ class RealtimeContract(abc.ABC):
 
     @abc.abstractmethod
     async def get_mapping(self, game: enums.RtGameType) -> list[models.MappingResponse]:
-        """Gets a mapping of data from the realtime API.
+        """Gets a mapping of miscellaneous item data from the realtime API.
 
         Args:
             game (`enums.RtGameType`): The game type to get the mapping for.
@@ -58,6 +58,23 @@ class RealtimeContract(abc.ABC):
 
     @abc.abstractmethod
     async def get_avg_price(
-        self, game: enums.RtGameType, timeseries: enums.RtTimeFilter, *, timestamp: datetime | None
+        self,
+        game: enums.RtGameType,
+        time_filter: enums.RtTimeFilter,
+        *,
+        timestamp: datetime | None,
     ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
-        ...
+        """Gets average price data for all known items over the given time filter.
+
+        Args:
+            game (`enums.RtGameType`): The game type to check prices for.
+
+            time_filter (`enums.RtTimeFilter`): The amount of time to filter on.
+
+            timestamp (`datetime | None`): The time that represents the begining of the
+                time period to be averaged.
+
+        Returns:
+            `result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]`:
+                A result continaing the price data, or an error if one occurred.
+        """

@@ -478,7 +478,7 @@ class Client:
     async def get_realtime_mapping(
         self, game: enums.RtGameType = enums.RtGameType.OSRS
     ) -> list[models.MappingResponse]:
-        """Gets a mapping of data from the realtime API.
+        """Gets a mapping of miscellaneous item data from the realtime API.
 
         Args:
             game (`enums.RtGameType`): The game type to get the mapping for.
@@ -496,4 +496,19 @@ class Client:
         *,
         timestamp: datetime | None = None,
     ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
+        """Gets average price data for all known items over the given time filter.
+
+        Args:
+            game (`enums.RtGameType`): The game type to check prices for.
+
+            time_filter (`enums.RtTimeFilter`): The amount of time to filter on.
+                Defaults to OSRS.
+
+            timestamp (`datetime | None`): The time that represents the begining of the
+                time period to be averaged. Defaults to `None` (now).
+
+        Returns:
+            `result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]`:
+                A result continaing the price data, or an error if one occurred.
+        """
         return await self._realtime.get_avg_price(game, time_filter, timestamp=timestamp)

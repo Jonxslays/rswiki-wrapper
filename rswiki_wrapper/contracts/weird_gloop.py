@@ -15,7 +15,7 @@ class WeirdGloopContract(abc.ABC):
     """The contract required to satify the weird gloop API.
 
     Args:
-        http_service (`HttpContract`): The http service to use to satify
+        http_service (`contracts.HttpContract`): The http service to use to satify
             this contract.
     """
 

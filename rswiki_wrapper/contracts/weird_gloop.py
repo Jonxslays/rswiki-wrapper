@@ -73,7 +73,7 @@ class WeirdGloopContract(abc.ABC):
 
     @abc.abstractmethod
     async def get_latest_exchange_price(
-        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
+        self, game: enums.WgGameType, *ids_or_names: str | int, locale: enums.Locale | None
     ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
         """Gets the latest grand exchange price for an item(s) by id or name.
 
@@ -88,7 +88,7 @@ class WeirdGloopContract(abc.ABC):
                 will be returned from the API.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             *ids_or_names (`str | int`): The ids as integers, or names as strings to get
                 the price for.
@@ -106,7 +106,7 @@ class WeirdGloopContract(abc.ABC):
     @abc.abstractmethod
     async def get_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None,
@@ -119,7 +119,7 @@ class WeirdGloopContract(abc.ABC):
             If both id and name are passed to this function, id will take precedence.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             time_filter (`enums.TimeFilter`): The amount of time to get the history for.
 
@@ -141,7 +141,7 @@ class WeirdGloopContract(abc.ABC):
     @abc.abstractmethod
     async def get_compressed_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None,
@@ -154,7 +154,7 @@ class WeirdGloopContract(abc.ABC):
             If both id and name are passed to this function, id will take precedence.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             time_filter (`enums.TimeFilter`): The amount of time to get the history for.
 

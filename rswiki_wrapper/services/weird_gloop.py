@@ -22,7 +22,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
     async def _set_price_params_and_fetch(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None,
@@ -42,7 +42,9 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         if locale:
             params["lang"] = locale.value
 
-        route = routes.HISTORICAL_PRICE.compile(game.value, time_filter.value).with_params(params)
+        route = routes.HISTORICAL_EXCHANGE_PRICE.compile(
+            game.value, time_filter.value
+        ).with_params(params)
         return await self._fetch(route)
 
     async def _set_tms_name_params_and_fetch(
@@ -133,7 +135,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         return models.SocialFeedResponse.from_raw(data)
 
     async def get_latest_exchange_price(
-        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
+        self, game: enums.WgGameType, *ids_or_names: str | int, locale: enums.Locale | None
     ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
         if not ids_or_names:
             raise errors.MissingArgumentError("You must specify at least 1 id or name.")
@@ -151,7 +153,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         if locale:
             params["lang"] = locale.value
 
-        route = routes.LATEST_PRICE.compile(game.value).with_params(params)
+        route = routes.LATEST_EXCHANGE_PRICE.compile(game.value).with_params(params)
         data = await self._fetch(route)
 
         if "error" in data:
@@ -169,7 +171,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
     async def get_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None,
@@ -196,7 +198,7 @@ class WeirdGloopService(contracts.WeirdGloopContract):
 
     async def get_compressed_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None,

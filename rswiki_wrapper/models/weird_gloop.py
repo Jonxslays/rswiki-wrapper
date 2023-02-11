@@ -9,7 +9,6 @@ from rswiki_wrapper import enums
 
 __all__ = (
     "CompressedExchangePriceResponse",
-    "ErrorResponse",
     "ExchangePriceResponse",
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",
@@ -21,25 +20,6 @@ __all__ = (
     "VosResponse",
     "VosHistoryResponse",
 )
-
-
-@dataclass(slots=True, init=False)
-class ErrorResponse(BaseResponse):
-    """An error returned by the weird gloop API."""
-
-    success: bool
-    """Whether the request was succesful, always `False`."""
-    error: str
-    """The error message."""
-
-    @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> ErrorResponse:
-        self = cls()
-
-        for attr in self.__dataclass_fields__:
-            setattr(self, attr, data[attr])
-
-        return self
 
 
 @dataclass(slots=True, init=False)

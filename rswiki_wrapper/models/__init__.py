@@ -8,6 +8,7 @@ __all__ = (
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",
     "PaginationMeta",
+    "RealtimePriceResponse",
     "SocialFeedResponse",
     "TmsResponse",
     "TmsSearchResponse",
@@ -19,4 +20,5 @@ __all__ = (
 from .base import *
 from .media_wiki import *
 from .realtime_wiki import *
+from .shared import *
 from .weird_gloop import *

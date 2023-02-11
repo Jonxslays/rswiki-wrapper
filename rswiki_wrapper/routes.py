@@ -10,14 +10,14 @@ from rswiki_wrapper.enums import BaseUrl
 __all__ = (
     "CompiledRoute",
     "Route",
+    "HISTORICAL_EXCHANGE_PRICE",
+    "LATEST_EXCHANGE_UPDATE",
+    "LATEST_EXCHANGE_PRICE",
+    "LATEST_SOCIAL_FEED",
+    "SOCIAL_FEED",
+    "TMS_CURRENT",
     "VOS",
     "VOS_HISTORY",
-    "LATEST_EXCHANGE_UPDATE",
-    "LATEST_PRICE",
-    "SOCIAL_FEED",
-    "LATEST_SOCIAL_FEED",
-    "HISTORICAL_PRICE",
-    "TMS_CURRENT",
 )
 
 
@@ -68,10 +68,11 @@ class Route:
 VOS: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/vos")
 VOS_HISTORY: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/vos/history")
 LATEST_EXCHANGE_UPDATE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange")
-LATEST_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/latest")
+LATEST_EXCHANGE_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/latest")
 SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social")
 LATEST_SOCIAL_FEED: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/social/last")
-HISTORICAL_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/{}")
+HISTORICAL_EXCHANGE_PRICE: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/exchange/history/{}/{}")
 TMS_CURRENT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/current")
 TMS_NEXT: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/next")
 TMS_SEARCH: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/search")
+REALTIME_PRICE: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/latest")

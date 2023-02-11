@@ -19,8 +19,8 @@ class DefaultHeaders(Enum):
     CONTACT_INFO = "Default"
 
 
-class GameType(Enum):
-    """Various Runescape game types."""
+class WgGameType(Enum):
+    """The game types available on the Weird Gloop API."""
 
     RS = "rs"
     """Runescape 3"""
@@ -39,6 +39,17 @@ class Locale(Enum):
     """English"""
     PT = "pt"
     """Portuguese"""
+
+
+class RtGameType(Enum):
+    """The game types available on the Realtime Wiki API."""
+
+    OSRS = "osrs"
+    """Oldschool Runescape"""
+    DMM = "dmm"
+    """Deadman Mode"""
+    FSW = "fsw"
+    """Fresh start world"""
 
 
 class TimeFilter(Enum):

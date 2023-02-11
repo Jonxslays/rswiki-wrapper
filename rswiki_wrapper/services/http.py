@@ -23,7 +23,9 @@ class HttpService(contracts.HttpContract):
         url = route.base.value + route.uri
 
         async with self._session.get(url, params=route.params) as resp:
-            if not resp.ok:
+            if not resp.ok and resp.status != 400:
+                # Realtime API returns 400 when an invalid item id is used
+                # We dont want to raise an exception for that
                 raise errors.HttpError(route, await resp.text())
 
             return await resp.json()

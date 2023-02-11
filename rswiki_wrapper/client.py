@@ -31,14 +31,18 @@ class Client:
         contact_info (`str | None`): The contact info to use in the request headers.
             Defaults to `None`.
 
+    Keyword Args:
         http (`contracts.HttpContract | None`): The underlying http service to use for
             requests. Defaults to `None`.
 
         weird_gloop (`contracts.WeirdGloopContract | None`): The weird gloop service
             to use for weird gloop API calls. Defaults to `None`.
+
+        realtime (`contracts.RealtimeContract | None`): The realtime service
+            to use for realtime wiki API calls. Defaults to `None`.
     """
 
-    __slots__ = ("_contact_info", "_http", "_project_name", "_weird_gloop")
+    __slots__ = ("_contact_info", "_http", "_project_name", "_realtime", "_weird_gloop")
 
     def __init__(
         self,
@@ -47,11 +51,13 @@ class Client:
         *,
         http: contracts.HttpContract | None = None,
         weird_gloop: contracts.WeirdGloopContract | None = None,
+        realtime: contracts.RealtimeContract | None = None,
     ) -> None:
         (
             self._assure_headers(project_name, contact_info)
             ._assure_http(http)
             ._assure_weird_gloop(weird_gloop)
+            ._assure_realtime(realtime)
         )
 
     @property
@@ -137,6 +143,24 @@ class Client:
 
         return self
 
+    def _assure_realtime(self, realtime: contracts.RealtimeContract | None) -> Client:
+        """Uses the user defined realtime service, if provided. Otherwise
+        instantiates the default implementation.
+
+        Args:
+            realtime (`contracts.RealtimeContract | None`): The realtime service
+                that inherits realtime contract, or `None` if the default should
+                be used.
+
+        Returns:
+            `Client`: The client for chained calls.
+        """
+        self._realtime = realtime or t.cast(
+            contracts.RealtimeContract, services.RealtimeService(self._http)
+        )
+
+        return self
+
     async def close(self) -> None:
         """Closes the in use http client session.
 
@@ -193,7 +217,7 @@ class Client:
         return await self._weird_gloop.get_latest_social_feed()
 
     async def get_latest_exchange_price(
-        self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
+        self, game: enums.WgGameType, *ids_or_names: str | int, locale: enums.Locale | None = None
     ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
         """Gets the latest grand exchange price for an item(s) by id or name.
 
@@ -208,7 +232,7 @@ class Client:
                 will be returned from the API.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             *ids_or_names (`str | int`): The ids as integers, or names as strings to get
                 the price for.
@@ -229,7 +253,7 @@ class Client:
 
     async def get_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None = None,
@@ -242,7 +266,7 @@ class Client:
             If both id and name are passed to this function, id will take precedence.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             time_filter (`enums.TimeFilter`): The amount of time to get the history for.
 
@@ -266,7 +290,7 @@ class Client:
 
     async def get_compressed_historical_exchange_price(
         self,
-        game: enums.GameType,
+        game: enums.WgGameType,
         time_filter: enums.TimeFilter,
         *,
         id: int | None = None,
@@ -279,7 +303,7 @@ class Client:
             If both id and name are passed to this function, id will take precedence.
 
         Args:
-            game (`enums.GameType`): The game type to check the price on.
+            game (`enums.WgGameType`): The game type to check the price on.
 
             time_filter (`enums.TimeFilter`): The amount of time to get the history for.
 
@@ -429,3 +453,24 @@ class Client:
         return await self._weird_gloop.search_tms_by_id_full(
             *ids, start_at=start_at, end_at=end_at, count=count
         )
+
+    async def get_realtime_price(
+        self, id: int | None = None, game: enums.RtGameType = enums.RtGameType.OSRS
+    ) -> result.Result[list[models.RealtimePriceResponse], models.ErrorResponse]:
+        """Gets the latest realtime price data from Runelite.
+
+        NOTE:
+            Consider fetching all prices once, and caching them for a period of time.
+            Then just do cache lookups for individual ID's. Reduces stress on the API.
+
+        Args:
+            id (`int | None`): The item id to search for. If `None`, all known items
+                are returned. Defaults to `None`.
+
+            game (`enums.RtGameType`): The game type to get the prices for. Defaults to OSRS.
+
+        Returns:
+            `result.Result[list[models.RealtimePriceResponse], models.ErrorResponse]`:
+                A result containing the list of prices, or an error.
+        """
+        return await self._realtime.get_realtime_price(game, id)

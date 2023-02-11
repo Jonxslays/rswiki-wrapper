@@ -8,12 +8,12 @@ from .base import BaseResponse
 from rswiki_wrapper import enums
 
 __all__ = (
-    "CompressedPriceResponse",
+    "CompressedExchangePriceResponse",
     "ErrorResponse",
+    "ExchangePriceResponse",
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",
     "PaginationMeta",
-    "PriceResponse",
     "SocialFeedResponse",
     "TmsResponse",
     "TmsSearchResponse",
@@ -192,8 +192,8 @@ class PaginatedSocialFeedResponse(BaseResponse):
 
 
 @dataclass(slots=True, init=False)
-class PriceResponse(BaseResponse):
-    """The price information for an item."""
+class ExchangePriceResponse(BaseResponse):
+    """The grand exchange price information for an item."""
 
     id: str
     """The items id."""
@@ -209,7 +209,7 @@ class PriceResponse(BaseResponse):
     """
 
     @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> PriceResponse:
+    def from_raw(cls, data: dict[str, t.Any]) -> ExchangePriceResponse:
         self = cls()
 
         for attr in self.__dataclass_fields__:
@@ -229,7 +229,7 @@ class PriceResponse(BaseResponse):
 
 
 @dataclass(slots=True, init=False)
-class CompressedPriceResponse(BaseResponse):
+class CompressedExchangePriceResponse(BaseResponse):
     """The compressed (less information) price of an item."""
 
     price: int
@@ -242,7 +242,7 @@ class CompressedPriceResponse(BaseResponse):
     """
 
     @classmethod
-    def from_raw(cls, data: dict[str, t.Any]) -> CompressedPriceResponse:
+    def from_raw(cls, data: dict[str, t.Any]) -> CompressedExchangePriceResponse:
         self = cls()
 
         for key, value in data.items():

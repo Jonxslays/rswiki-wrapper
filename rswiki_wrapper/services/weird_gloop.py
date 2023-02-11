@@ -132,9 +132,9 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         data = await self._fetch(route)
         return models.SocialFeedResponse.from_raw(data)
 
-    async def get_latest_price(
+    async def get_latest_exchange_price(
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None
-    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
         if not ids_or_names:
             raise errors.MissingArgumentError("You must specify at least 1 id or name.")
 
@@ -155,19 +155,19 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         data = await self._fetch(route)
 
         if "error" in data:
-            return result.Err[list[models.PriceResponse], models.ErrorResponse](
+            return result.Err[list[models.ExchangePriceResponse], models.ErrorResponse](
                 models.ErrorResponse.from_raw(data)
             )
 
-        prices: list[models.PriceResponse] = []
+        prices: list[models.ExchangePriceResponse] = []
         for key, value in data.items():
-            response = models.PriceResponse.from_raw(value)
+            response = models.ExchangePriceResponse.from_raw(value)
             response.identifier = key
             prices.append(response)
 
-        return result.Ok[list[models.PriceResponse], models.ErrorResponse](prices)
+        return result.Ok[list[models.ExchangePriceResponse], models.ErrorResponse](prices)
 
-    async def get_historical_price(
+    async def get_historical_exchange_price(
         self,
         game: enums.GameType,
         time_filter: enums.TimeFilter,
@@ -175,26 +175,26 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         id: int | None,
         name: str | None,
         locale: enums.Locale | None,
-    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
         data = await self._set_price_params_and_fetch(
             game, time_filter, id=id, name=name, locale=locale, params={}
         )
 
         if "error" in data:
-            return result.Err[list[models.PriceResponse], models.ErrorResponse](
+            return result.Err[list[models.ExchangePriceResponse], models.ErrorResponse](
                 models.ErrorResponse.from_raw(data)
             )
 
-        prices: list[models.PriceResponse] = []
+        prices: list[models.ExchangePriceResponse] = []
         for key, value in data.items():
             for price in value:
-                response = models.PriceResponse.from_raw(price)
+                response = models.ExchangePriceResponse.from_raw(price)
                 response.identifier = key
                 prices.append(response)
 
-        return result.Ok[list[models.PriceResponse], models.ErrorResponse](prices)
+        return result.Ok[list[models.ExchangePriceResponse], models.ErrorResponse](prices)
 
-    async def get_compressed_historical_price(
+    async def get_compressed_historical_exchange_price(
         self,
         game: enums.GameType,
         time_filter: enums.TimeFilter,
@@ -202,21 +202,25 @@ class WeirdGloopService(contracts.WeirdGloopContract):
         id: int | None,
         name: str | None,
         locale: enums.Locale | None,
-    ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
+    ) -> result.Result[list[models.CompressedExchangePriceResponse], models.ErrorResponse]:
         data = await self._set_price_params_and_fetch(
             game, time_filter, id=id, name=name, locale=locale, params={"compress": "true"}
         )
 
         if "error" in data:
-            return result.Err[list[models.CompressedPriceResponse], models.ErrorResponse](
+            return result.Err[list[models.CompressedExchangePriceResponse], models.ErrorResponse](
                 models.ErrorResponse.from_raw(data)
             )
 
-        prices: list[models.CompressedPriceResponse] = []
+        prices: list[models.CompressedExchangePriceResponse] = []
         for key, value in data.items():
-            prices.extend(models.CompressedPriceResponse.from_raw({key: pair}) for pair in value)
+            prices.extend(
+                models.CompressedExchangePriceResponse.from_raw({key: pair}) for pair in value
+            )
 
-        return result.Ok[list[models.CompressedPriceResponse], models.ErrorResponse](prices)
+        return result.Ok[list[models.CompressedExchangePriceResponse], models.ErrorResponse](
+            prices
+        )
 
     async def get_current_tms(self) -> list[models.TmsResponse]:
         route = routes.TMS_CURRENT.compile().with_params({"lang": "full"})

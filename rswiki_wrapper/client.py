@@ -192,15 +192,15 @@ class Client:
         """
         return await self._weird_gloop.get_latest_social_feed()
 
-    async def get_latest_price(
+    async def get_latest_exchange_price(
         self, game: enums.GameType, *ids_or_names: str | int, locale: enums.Locale | None = None
-    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
-        """Gets the latest price for an item(s) by id or name.
+    ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
+        """Gets the latest grand exchange price for an item(s) by id or name.
 
         ```py
         # Example
-        await client.get_latest_price(GameType.RS, "abyssal whip", "dragon dagger")
-        await client.get_latest_price(GameType.RS, 4151, 1215)
+        await client.get_latest_exchange_price(GameType.RS, "abyssal whip", "dragon dagger")
+        await client.get_latest_exchange_price(GameType.RS, 4151, 1215)
         ```
 
         NOTE:
@@ -219,13 +219,15 @@ class Client:
                     Only useful if names were used.
 
         Returns:
-            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
+            `result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the latest price response models,
                 or an error.
         """
-        return await self._weird_gloop.get_latest_price(game, *ids_or_names, locale=locale)
+        return await self._weird_gloop.get_latest_exchange_price(
+            game, *ids_or_names, locale=locale
+        )
 
-    async def get_historical_price(
+    async def get_historical_exchange_price(
         self,
         game: enums.GameType,
         time_filter: enums.TimeFilter,
@@ -233,8 +235,8 @@ class Client:
         id: int | None = None,
         name: str | None = None,
         locale: enums.Locale | None = None,
-    ) -> result.Result[list[models.PriceResponse], models.ErrorResponse]:
-        """Gets the historical price for an item by id or name.
+    ) -> result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]:
+        """Gets the historical grand exchange price for an item by id or name.
 
         NOTE:
             If both id and name are passed to this function, id will take precedence.
@@ -254,15 +256,15 @@ class Client:
                     Only useful if names were used.
 
         Returns:
-            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
+            `result.Result[list[models.ExchangePriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the historical price response
                 models, or an error.
         """
-        return await self._weird_gloop.get_historical_price(
+        return await self._weird_gloop.get_historical_exchange_price(
             game, time_filter, id=id, name=name, locale=locale
         )
 
-    async def get_compressed_historical_price(
+    async def get_compressed_historical_exchange_price(
         self,
         game: enums.GameType,
         time_filter: enums.TimeFilter,
@@ -270,8 +272,8 @@ class Client:
         id: int | None = None,
         name: str | None = None,
         locale: enums.Locale | None = None,
-    ) -> result.Result[list[models.CompressedPriceResponse], models.ErrorResponse]:
-        """Gets the compressed historical price for an item by id or name.
+    ) -> result.Result[list[models.CompressedExchangePriceResponse], models.ErrorResponse]:
+        """Gets the compressed historical grand exchange price for an item by id or name.
 
         NOTE:
             If both id and name are passed to this function, id will take precedence.
@@ -291,11 +293,11 @@ class Client:
                     Only useful if names were used.
 
         Returns:
-            `result.Result[list[models.PriceResponse], models.ErrorResponse]`:
+            `result.Result[list[models.CompressedExchangePriceResponse], models.ErrorResponse]`:
                 A result containing either a list of the compressed historical
                 price response models, or an error.
         """
-        return await self._weird_gloop.get_compressed_historical_price(
+        return await self._weird_gloop.get_compressed_historical_exchange_price(
             game, time_filter, id=id, name=name, locale=locale
         )
 

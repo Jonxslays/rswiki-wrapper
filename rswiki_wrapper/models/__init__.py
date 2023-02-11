@@ -2,12 +2,12 @@
 
 __all__ = (
     "BaseResponse",
-    "CompressedPriceResponse",
+    "CompressedExchangePriceResponse",
     "ErrorResponse",
+    "ExchangePriceResponse",
     "LatestExchangeUpdateResponse",
     "PaginatedSocialFeedResponse",
     "PaginationMeta",
-    "PriceResponse",
     "SocialFeedResponse",
     "TmsResponse",
     "TmsSearchResponse",

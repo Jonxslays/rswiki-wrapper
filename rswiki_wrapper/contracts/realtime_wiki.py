@@ -49,6 +49,10 @@ class RealtimeContract(abc.ABC):
     async def get_mapping(self, game: enums.RtGameType) -> list[models.MappingResponse]:
         """Gets a mapping of miscellaneous item data from the realtime API.
 
+        NOTE:
+            Consider fetching all items once, and caching them for a period of time.
+            Then just do cache lookups for individual ID's. Reduces stress on the API.
+
         Args:
             game (`enums.RtGameType`): The game type to get the mapping for.
 
@@ -65,6 +69,10 @@ class RealtimeContract(abc.ABC):
         timestamp: datetime | None,
     ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
         """Gets average price data for all known items over the given time filter.
+
+        NOTE:
+            Consider fetching all prices once, and caching them for a period of time.
+            Then just do cache lookups for individual ID's. Reduces stress on the API.
 
         Args:
             game (`enums.TimeSeriesGameType`): The game type to check prices for.
@@ -84,6 +92,7 @@ class RealtimeContract(abc.ABC):
         self, id: int, game: enums.TimeSeriesGameType, timestep: enums.TimeSeriesFilter
     ) -> result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
         """Gets the average price data of the item over the given time series.
+        Returns up to 365 prices maximum.
 
         Args:
             id (`int`): The item id to get prices for.

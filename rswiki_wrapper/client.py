@@ -492,7 +492,7 @@ class Client:
     async def get_realtime_avg_price(
         self,
         time_filter: enums.RtTimeFilter,
-        game: enums.RtGameType = enums.RtGameType.OSRS,
+        game: enums.TimeSeriesGameType = enums.TimeSeriesGameType.OSRS,
         *,
         timestamp: datetime | None = None,
     ) -> result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]:
@@ -512,3 +512,8 @@ class Client:
                 A result continaing the price data, or an error if one occurred.
         """
         return await self._realtime.get_avg_price(game, time_filter, timestamp=timestamp)
+
+    async def get_realtime_avg_price_by_id(
+        self, id: int, game: enums.TimeSeriesGameType, timestep: enums.TimeSeriesFilter
+    ) -> result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
+        return await self._realtime.get_avg_price_by_id(id, game, timestep)

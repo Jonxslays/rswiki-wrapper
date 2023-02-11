@@ -13,6 +13,7 @@ __all__ = (
     "AveragePriceResponse",
     "MappingResponse",
     "RealtimePriceResponse",
+    "TimeSeriesPriceResponse",
     "TimeFilteredPriceResponse",
 )
 
@@ -126,5 +127,35 @@ class TimeFilteredPriceResponse(BaseResponse):
             price = AveragePriceResponse.from_raw(item)
             price.id = int(item_id)
             self.data.append(price)
+
+        return self
+
+
+@dataclass(slots=True, init=False)
+class TimeSeriesPriceResponse(AveragePriceResponse):
+    """The average price of the item over the given time series."""
+
+    id: int
+    """The item's id."""
+    high: int
+    """The average high price."""
+    low: int
+    """The average low price."""
+    high_volume: int
+    """The volume traded at the high price."""
+    low_volume: int
+    """The volume traded at the low price."""
+    timestamp: datetime
+    """The timestamp of the data."""
+
+    @classmethod
+    def from_raw(cls, data: dict[str, t.Any]) -> TimeSeriesPriceResponse:
+        self = cls()
+        self.timestamp = self._dt_from_epoch(data["timestamp"])
+        price = AveragePriceResponse.from_raw(data)
+
+        for attr in self.__dataclass_fields__:
+            if attr not in ("timestamp", "id"):
+                setattr(self, attr, getattr(price, attr))
 
         return self

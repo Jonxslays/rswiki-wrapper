@@ -6,8 +6,6 @@ from datetime import datetime
 
 from rswiki_wrapper import contracts
 from rswiki_wrapper import enums
-
-# from rswiki_wrapper import errors
 from rswiki_wrapper import models
 from rswiki_wrapper import result
 from rswiki_wrapper import routes
@@ -40,12 +38,6 @@ class RealtimeService(contracts.RealtimeContract):
                 models.ErrorResponse.from_raw(data)
             )
 
-        if not data["data"]:
-            # No items were found with that ID
-            return result.Err[list[models.RealtimePriceResponse], models.ErrorResponse](
-                models.ErrorResponse.from_str(f"No items found for id: {id}")
-            )
-
         buffer: list[models.RealtimePriceResponse] = []
         for item_id, item in data["data"].items():
             price = models.RealtimePriceResponse.from_raw(item)
@@ -61,7 +53,7 @@ class RealtimeService(contracts.RealtimeContract):
 
     async def get_avg_price(
         self,
-        game: enums.RtGameType,
+        game: enums.TimeSeriesGameType,
         time_filter: enums.RtTimeFilter,
         *,
         timestamp: datetime | None,
@@ -85,3 +77,23 @@ class RealtimeService(contracts.RealtimeContract):
         return result.Ok[models.TimeFilteredPriceResponse, models.ErrorResponse](
             models.TimeFilteredPriceResponse.from_raw(data)
         )
+
+    async def get_avg_price_by_id(
+        self, id: int, game: enums.TimeSeriesGameType, timestep: enums.TimeSeriesFilter
+    ) -> result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
+        params = {"id": id, "timestep": timestep.value}
+        route = routes.REALTIME_TIMESERIES.compile(game.value).with_params(params)
+        data = await self._fetch(route)
+
+        if "error" in data:
+            return result.Err[list[models.TimeSeriesPriceResponse], models.ErrorResponse](
+                models.ErrorResponse.from_raw(data)
+            )
+
+        buffer: list[models.TimeSeriesPriceResponse] = []
+        for item in data["data"]:
+            price = models.TimeSeriesPriceResponse.from_raw(item)
+            price.id = id
+            buffer.append(price)
+
+        return result.Ok[list[models.TimeSeriesPriceResponse], models.ErrorResponse](buffer)

@@ -17,6 +17,7 @@ __all__ = (
     "REALTIME_AVG_PRICE",
     "REALTIME_MAPPING",
     "REALTIME_PRICE",
+    "REALTIME_TIMESERIES",
     "SOCIAL_FEED",
     "TMS_CURRENT",
     "VOS",
@@ -81,3 +82,4 @@ TMS_SEARCH: t.Final[Route] = Route(BaseUrl.WEIRD_GLOOP, "/runescape/tms/search")
 REALTIME_PRICE: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/latest")
 REALTIME_MAPPING: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/mapping")
 REALTIME_AVG_PRICE: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/{}")
+REALTIME_TIMESERIES: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/timeseries")

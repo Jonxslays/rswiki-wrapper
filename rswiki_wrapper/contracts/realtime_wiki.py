@@ -59,7 +59,7 @@ class RealtimeContract(abc.ABC):
     @abc.abstractmethod
     async def get_avg_price(
         self,
-        game: enums.RtGameType,
+        game: enums.TimeSeriesGameType,
         time_filter: enums.RtTimeFilter,
         *,
         timestamp: datetime | None,
@@ -67,7 +67,7 @@ class RealtimeContract(abc.ABC):
         """Gets average price data for all known items over the given time filter.
 
         Args:
-            game (`enums.RtGameType`): The game type to check prices for.
+            game (`enums.TimeSeriesGameType`): The game type to check prices for.
 
             time_filter (`enums.RtTimeFilter`): The amount of time to filter on.
 
@@ -78,3 +78,9 @@ class RealtimeContract(abc.ABC):
             `result.Result[models.TimeFilteredPriceResponse, models.ErrorResponse]`:
                 A result continaing the price data, or an error if one occurred.
         """
+
+    @abc.abstractmethod
+    async def get_avg_price_by_id(
+        self, id: int, game: enums.TimeSeriesGameType, timestep: enums.TimeSeriesFilter
+    ) -> result.Result[list[models.TimeSeriesPriceResponse], models.ErrorResponse]:
+        ...

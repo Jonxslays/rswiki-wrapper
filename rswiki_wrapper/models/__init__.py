@@ -12,7 +12,6 @@ __all__ = (
     "PaginationMeta",
     "RealtimePriceResponse",
     "SocialFeedResponse",
-    "TimeFilteredPriceResponse",
     "TmsResponse",
     "TmsSearchResponse",
     "TmsSearchFullResponse",

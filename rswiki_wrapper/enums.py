@@ -48,6 +48,11 @@ class Locale(BaseEnum):
     """Portuguese"""
 
 
+class MwGameType(BaseEnum):
+    OSRS = "osrs"
+    RS = "rs"
+
+
 class RtGameType(BaseEnum):
     """The game types available on the Realtime Wiki API."""
 

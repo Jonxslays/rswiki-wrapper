@@ -40,9 +40,19 @@ class Client:
 
         realtime (`contracts.RealtimeContract | None`): The realtime service
             to use for realtime wiki API calls. Defaults to `None`.
+
+        mediawiki (`contracts.MediaWikiContract | None`): The MediaWiki service
+            to use for MediaWiki API calls. Defaults to `None`.
     """
 
-    __slots__ = ("_contact_info", "_http", "_project_name", "_realtime", "_weird_gloop")
+    __slots__ = (
+        "_contact_info",
+        "_http",
+        "_mediawiki",
+        "_project_name",
+        "_realtime",
+        "_weird_gloop",
+    )
 
     def __init__(
         self,
@@ -52,12 +62,14 @@ class Client:
         http: contracts.HttpContract | None = None,
         weird_gloop: contracts.WeirdGloopContract | None = None,
         realtime: contracts.RealtimeContract | None = None,
+        mediawiki: contracts.MediaWikiContract | None = None,
     ) -> None:
         (
             self._assure_headers(project_name, contact_info)
             ._assure_http(http)
             ._assure_weird_gloop(weird_gloop)
             ._assure_realtime(realtime)
+            ._assure_mediawiki(mediawiki)
         )
 
     @property
@@ -77,6 +89,33 @@ class Client:
     @project_name.setter
     def project_name(self, project_name: str) -> None:
         self._project_name = project_name
+
+    @property
+    def weird_gloop(self) -> contracts.WeirdGloopContract:
+        """The weird gloop service being used."""
+        return self._weird_gloop
+
+    @weird_gloop.setter
+    def weird_gloop(self, weird_gloop: contracts.WeirdGloopContract) -> None:
+        self._weird_gloop = weird_gloop
+
+    @property
+    def realtime(self) -> contracts.RealtimeContract:
+        """The realtime service being used."""
+        return self._realtime
+
+    @realtime.setter
+    def realtime(self, realtime: contracts.RealtimeContract) -> None:
+        self._realtime = realtime
+
+    @property
+    def mediawiki(self) -> contracts.MediaWikiContract:
+        """The MediaWiki service being used."""
+        return self._mediawiki
+
+    @mediawiki.setter
+    def mediawiki(self, mediawiki: contracts.MediaWikiContract) -> None:
+        self._mediawiki = mediawiki
 
     def _assure_headers(self, project_name: str | None, contact_info: str | None) -> Client:
         """Uses the user defined values or sets the default request headers.
@@ -157,6 +196,24 @@ class Client:
         """
         self._realtime = realtime or t.cast(
             contracts.RealtimeContract, services.RealtimeService(self._http)
+        )
+
+        return self
+
+    def _assure_mediawiki(self, mediawiki: contracts.MediaWikiContract | None) -> Client:
+        """Uses the user defined MediaWiki service, if provided. Otherwise
+        instantiates the default implementation.
+
+        Args:
+            mediawiki (`contracts.MediaWikiContract | None`): The MediaWiki service
+                that inherits realtime contract, or `None` if the default should
+                be used.
+
+        Returns:
+            `Client`: The client for chained calls.
+        """
+        self._mediawiki = mediawiki or t.cast(
+            contracts.MediaWikiContract, services.MediaWikiService(self._http)
         )
 
         return self
@@ -539,3 +596,8 @@ class Client:
                 A result continaing the price data, or an error if one occurred.
         """
         return await self._realtime.get_avg_price_by_id(id, game, timestep)
+
+    async def browse_mediawiki(
+        self, subject: str, game: enums.MwGameType = enums.MwGameType.OSRS
+    ) -> dict[str, t.Any]:
+        return await self._mediawiki.browse(subject, game)

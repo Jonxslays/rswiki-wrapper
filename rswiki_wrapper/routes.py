@@ -14,6 +14,7 @@ __all__ = (
     "LATEST_EXCHANGE_UPDATE",
     "LATEST_EXCHANGE_PRICE",
     "LATEST_SOCIAL_FEED",
+    "MEDIAWIKI",
     "REALTIME_AVG_PRICE",
     "REALTIME_MAPPING",
     "REALTIME_PRICE",
@@ -83,3 +84,4 @@ REALTIME_PRICE: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/latest"
 REALTIME_MAPPING: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/mapping")
 REALTIME_AVG_PRICE: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/{}")
 REALTIME_TIMESERIES: t.Final[Route] = Route(BaseUrl.REALTIME_WIKI_PRICE, "/{}/timeseries")
+MEDIAWIKI: t.Final[Route] = Route(BaseUrl.MEDIAWIKI_OSRS, "")
